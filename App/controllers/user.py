@@ -2,21 +2,34 @@ from App.models import User, Student, Employer, Staff
 from App.database import db
 
 def create_user(username, password, type):
-    if type == "student":
-        newuser = Student(username=username, password=password)
-        db.session.add(newuser)
-        db.session.commit()
-        return newuser
-    elif type == "employer":
-        newuser = Employer(username=username, password=password)
-        db.session.add(newuser)
-        db.session.commit()
-        return newuser
-    elif type == "staff":
-        newuser = Staff(username=username, password=password)
-        db.session.add(newuser)
-        db.session.commit()
-        return newuser
+    try:
+        if type == "student":
+            newuser = User(username=username, password=password, role=type)
+            db.session.add(newuser)
+            db.session.flush()
+            student = Student(username=username, user_id=newuser.id)
+            db.session.add(student)
+            db.session.commit
+            return True
+        elif type == "employer":
+            newuser = User(username=username, password=password)
+            db.session.add(newuser)
+            db.session.flush()
+            employer = Employer(username=username, user_id=newuser.id)
+            db.session.add(employer)
+            db.session.commit
+            return True
+        elif type == "staff":
+            newuser = User(username=username, password=password)
+            db.session.add(newuser)
+            db.session.flush()
+            staff = Staff(username=username, user_id=newuser.id)
+            db.session.add(staff)
+            db.session.commit
+            return True
+    except Exception as e:
+        db.session.rollback()
+        return False
 
 def get_user_by_username(username):
     result = db.session.execute(db.select(User).filter_by(username=username))
