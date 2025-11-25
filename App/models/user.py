@@ -1,7 +1,7 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
 
-#edited.
+#edited 
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -14,7 +14,6 @@ class User(db.Model):
         "polymorphic_identity": "user"      
     }
 
-    
     
     def __init__(self, username, password, role = "user"):
         self.username = username
