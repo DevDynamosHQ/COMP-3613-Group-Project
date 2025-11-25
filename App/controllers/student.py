@@ -1,7 +1,7 @@
 from App.models import Student
 from App.database import db
 
-
+#making pull request
 def create_student(username, password, email=None):
     student = Student(username=username, password=password, email=email)
     db.session.add(student)
