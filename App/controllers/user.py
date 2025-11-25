@@ -1,6 +1,7 @@
 from App.models import User, Student, Employer, Staff
 from App.database import db
 
+#edited user controller
 def create_user(username, password, user_type, email= None):
     try:
         if user_type == "student":
