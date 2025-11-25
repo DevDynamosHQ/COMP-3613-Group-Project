@@ -8,11 +8,16 @@ class User(db.Model):
     password = db.Column(db.String(256), nullable=False)
     role = db.Column(db.String(50), nullable=False)
 
+    __mapper_args__ = {
+        "polymorphic_on": role,             
+        "polymorphic_identity": "user"      
+    }
+
     student = db.relationship('Student', backref='user', uselist=False)
     employer = db.relationship('Employer', backref='user', uselist=False)
     staff = db.relationship('Staff', backref='user', uselist=False)
     
-    def __init__(self, username, password, role):
+    def __init__(self, username, password, role = "user"):
         self.username = username
         self.set_password(password)
         self.role = role
@@ -20,7 +25,8 @@ class User(db.Model):
     def get_json(self):
         return{
             'id': self.id,
-            'username': self.username
+            'username': self.username,
+            'role': self.role
         }
 
     def set_password(self, password):
