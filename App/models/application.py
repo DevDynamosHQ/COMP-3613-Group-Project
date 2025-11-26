@@ -46,7 +46,7 @@ class Application(db.Model):
     @property
     def state(self):
         if not hasattr(self, '_state') or self._state.get_state_name() != self.state_name:
-        self._state = self._get_state_from_name(self.state_name)
+            self._state = self._get_state_from_name(self.state_name)
         return self._state
 
 
