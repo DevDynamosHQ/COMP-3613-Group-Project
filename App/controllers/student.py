@@ -1,6 +1,7 @@
 from App.models import Student
 from App.database import db
 
+#edited
 
 def create_student(username, password, email=None):
     student = Student(username=username, password=password, email=email)
@@ -27,6 +28,7 @@ def get_all_students_json():
 
 def update_student(id, email=None, dob=None, gender=None, degree=None, phone=None, gpa=None, resume=None):
     student = get_student(id)
+
     if not student:
         return None
 
@@ -47,7 +49,6 @@ def update_student(id, email=None, dob=None, gender=None, degree=None, phone=Non
 
     db.session.commit()
     return student
-
 
 
 def delete_student(id):
