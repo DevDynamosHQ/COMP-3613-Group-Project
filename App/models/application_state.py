@@ -55,3 +55,37 @@ class AppliedState(ApplicationState):
     def get_state_name(self):
         return "applied"
 
+
+class ShortlistedState(ApplicationState):
+
+
+    def shortlist(self, application):
+        raise ValueError("Application is already shortlisted.")
+
+
+    def accept(self, application):
+        application._state = AcceptedState()
+        return True
+
+
+    def reject(self, application):
+        application._state = RejectedState()
+        return True
+
+
+    def can_shortlist(self):
+        return False
+
+
+    def can_accept(self):
+        return True
+
+
+    def can_reject(self):
+        return True
+
+
+    def get_state_name(self):
+        return "shortlisted"
+
+
