@@ -119,3 +119,39 @@ class AcceptedState(ApplicationState):
     def get_state_name(self):
         return "accepted"
 
+
+class RejectedState(ApplicationState):
+
+
+    def shortlist(self, application):
+        raise ValueError("Cannot shortlist a rejected application.")
+
+
+    def accept(self, application):
+        raise ValueError("Cannot accept a rejected application.")
+
+
+    def reject(self, application):
+        raise ValueError("Application is already rejected.")
+
+
+    def can_shortlist(self):
+        return False
+
+
+    def can_accept(self):
+        return False
+
+
+    def can_reject(self):
+        return False
+
+
+    def get_state_name(self):
+        return "rejected"
+
+
+
+
+
+
