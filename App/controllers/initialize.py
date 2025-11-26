@@ -1,3 +1,4 @@
+from App.controllers.position import open_position
 from App.database import db
 from .user import create_user
 from App.models import User, Student, Employer, Staff, Position, Application
