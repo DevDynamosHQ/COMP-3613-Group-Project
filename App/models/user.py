@@ -1,6 +1,8 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
 
+#edited
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -13,9 +15,6 @@ class User(db.Model):
         "polymorphic_identity": "user"      
     }
 
-    student = db.relationship('Student', backref='user', uselist=False)
-    employer = db.relationship('Employer', backref='user', uselist=False)
-    staff = db.relationship('Staff', backref='user', uselist=False)
     
     def __init__(self, username, password, role = "user"):
         self.username = username
