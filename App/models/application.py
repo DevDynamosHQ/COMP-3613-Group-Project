@@ -47,7 +47,7 @@ class Application(db.Model):
     def state(self):
         if not hasattr(self, '_state') or self._state.get_state_name() != self.state_name:
             self._state = self._get_state_from_name(self.state_name)
-        return self._state
+            return self._state
 
 
     def can_user_shortlist(self, user):
