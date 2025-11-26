@@ -2,8 +2,6 @@ from sqlalchemy import false
 from App.models import Shortlist, Position, Staff, Student
 from App.database import db
 
-from App.models import Shortlist, Position, Staff, Student
-from App.database import db
 
 def add_student_to_shortlist(student_id, position_id, staff_id):
 
@@ -59,11 +57,10 @@ def decide_shortlist(student_id, position_id, decision):
     db.session.commit()
     return shortlist
 
-
 def get_shortlist_by_student(student_id):
     return db.session.execute(
-        db.select(Shortlist).filter_by(student_id=student_id)
-    ).scalars().all()
+            db.select(Shortlist).filter_by(student_id=student_id)
+        ).scalars().all()
 
 
 def get_shortlist_by_position(position_id):
