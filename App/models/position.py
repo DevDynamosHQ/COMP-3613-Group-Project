@@ -13,19 +13,25 @@ class Position(db.Model):
     number_of_positions = db.Column(db.Integer, default=1)
     status = db.Column(Enum(PositionStatus, native_enum=False), nullable=False, default=PositionStatus.open)
     employer_id = db.Column(db.Integer, db.ForeignKey('employer.id'), nullable=False)
+    
     employer = db.relationship("Employer", back_populates="positions")
 
     def __init__(self, title, employer_id, number):
         self.title = title
         self.employer_id = employer_id
-        self.status = "open"
+        self.status = PositionStatus.open
         self.number_of_positions = number
         
 
     def update_status(self, status):
-        self.status = status
+        if isinstance(status, PositionStatus):
+            self.status = status
+        else:
+            stat = PositionStatus(status)
+            if isinstance(stat, PositionStatus):
+                self.status = stat
         db.session.commit()
-        return self.status
+        return self.status.value
 
     def update_number_of_positions(self, number_of_positions):
         self.number_of_positions = number_of_positions
@@ -38,7 +44,7 @@ class Position(db.Model):
         return
 
     def list_positions(self):
-        return db.session.query(Position).all()
+        return db.session.query(self).all()
 
     def toJSON(self):
         return {
@@ -48,3 +54,6 @@ class Position(db.Model):
             "status": self.status.value,
             "employer_id": self.employer_id
         }
+
+    def __repr__(self):
+        return f"<Position {self.id}: {self.title} ({self.status.value})>"
