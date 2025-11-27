@@ -6,6 +6,7 @@ from App.models import User
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize, open_position, add_student_to_shortlist, decide_shortlist, get_shortlist_by_student, get_shortlist_by_position, get_positions_by_employer)
 from App.models.application import Application
+from App.controllers.application import application_cli as app_application_cli
 
 
 # This commands file allow you to create convenient CLI commands for testing controllers
@@ -327,48 +328,6 @@ def shortlist_application_command(application_id, user_id):
         db.session.rollback()
         print(f'✗ Error shortlisting application: {e}')
 
-
-@application_cli.command("list_all_applications", help="List all applications for a position")
-@click.argument("position_id", type=int)
-@with_appcontext
-def list_applications_by_position_command(position_id):
-    applications = Application.query.filter_by(position_id=position_id).all()
-    
-    if not applications:
-        print(f'No applications found for this position')
-        return
-    
-    print(f'\nApplications for Position {position_id}:')  
-    for application in applications:
-        print(f'Application ID: {application.id}')
-        print(f'Title: {application.title}')
-        print(f'Student ID: {application.student_id}')
-        print(f'Shortlisting Staff ID: {application.staff_id}')
-        print(f'State: {application.state_name}')
-        print(f'Date Created: {application.created_at}')
-
-
-@application_cli.command("demo", help="showcase application state transitions")
-@click.argument("position-id", type=int, default=1)
-@click.argument("student-id", type=int, default=1)
-@click.argument("staff-id", type=int, default=1)
-@with_appcontext
-def demo_application_command(position_id, student_id, staff_id):
-    try:
-        application = Application(position_id=position_id, student_id=student_id, staff_id=staff_id, title="Demo Application"
-        )
-        db.session.add(application)
-        db.session.commit()
-        
-        print(f"Demo Application created. Application ID: {application.id}")
-        print(f"Initial State: {application.state_name}\n")
-        
-        print(f"Shortlist: {application.shortlist(staff_id)}\n")
-        print(f"New State: {application.state_name}\n")
-        
-    except Exception as e:
-        db.session.rollback()
-        print(f"Error in demo: {e}")
 
 
 app.cli.add_command(application_cli)
