@@ -5,6 +5,7 @@ from App.database import db, get_migrate
 from App.models import User
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize, open_position, add_student_to_shortlist, decide_shortlist, get_shortlist_by_student, get_shortlist_by_position, get_positions_by_employer)
+from App.models.application import Application
 
 
 # This commands file allow you to create convenient CLI commands for testing controllers
@@ -61,7 +62,7 @@ def add_position_command(title, employer_id, number):
     else:
         print(f'Employer {employer_id} does not exist')
 
-@user_cli.command("add_to_shortlist", help="Adds a student to a shortlist")
+'''@user_cli.command("add_to_shortlist", help="Adds a student to a shortlist")
 @click.argument("student_id", default=1)
 @click.argument("position_id", default=1)
 @click.argument("staff_id", default=1)
@@ -134,7 +135,7 @@ def get_positions_by_employer_command(employer_id):
             print(f'Employer {employer_id} has no positions')
             print("\n\n__________________________________________________________________________\n\n")
             
-app.cli.add_command(user_cli) # add the group to the cli
+app.cli.add_command(user_cli)''' # add the group to the cli
 
 '''
 Test Commands
@@ -154,3 +155,40 @@ def user_tests_command(type):
     
 
 app.cli.add_command(test)
+
+'''
+Application Commands - State Pattern Demo
+'''
+application_cli = AppGroup('application', help='Application object commands')
+
+@application_cli.command("create", help="Creates an internship application")
+@click.argument("position_id", type=int)
+@click.argument("student_id", type=int)
+@click.argument("staff_id", type=int)
+@click.argument("title", default="Sample Application")
+@with_appcontext
+def create_application_command(position_id, student_id, staff_id, title):
+    """Create a new application."""
+    try:
+        application = Application(
+            position_id=position_id,
+            student_id=student_id,
+            staff_id=staff_id,
+            title=title
+        )
+        db.session.add(application)
+        db.session.commit()
+
+        print("✓ Application created successfully!")
+        print(f"  ID: {application.id}")
+        print(f"  Position ID: {application.position_id}")
+        print(f"  Student ID: {application.student_id}")
+        print(f"  Staff ID: {application.staff_id}")
+        print(f"  Title: {application.title}")
+        print(f'  Can Accept: {application.can_user_accept()}')
+        print(f'  Can Reject: {application.can_user_reject()}')
+        print(f'  Can Shortlist: {application.can_user_shortlist()}')
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"✗ Error creating application: {e}")
