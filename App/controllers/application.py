@@ -219,7 +219,7 @@ def shortlist_application_command(application_id, user_id):
 
 
 
-app.cli.add_command(application_cli)
+
 
 
 
