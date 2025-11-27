@@ -326,3 +326,25 @@ def shortlist_application_command(application_id, user_id):
     except Exception as e:
         db.session.rollback()
         print(f'✗ Error shortlisting application: {e}')
+
+
+@application_cli.command("list_all_applications", help="List all applications for a position")
+@click.argument("position_id", type=int)
+@with_appcontext
+def list_applications_by_position_command(position_id):
+    applications = Application.query.filter_by(position_id=position_id).all()
+    
+    if not applications:
+        print(f'No applications found for this position')
+        return
+    
+    print(f'\nApplications for Position {position_id}:')  
+    for application in applications:
+        print(f'Application ID: {application.id}')
+        print(f'Title: {application.title}')
+        print(f'Student ID: {application.student_id}')
+        print(f'Shortlisting Staff ID: {application.staff_id}')
+        print(f'State: {application.state_name}')
+        print(f'Date Created: {application.created_at}')
+
+app.cli.add_command(application_cli)
