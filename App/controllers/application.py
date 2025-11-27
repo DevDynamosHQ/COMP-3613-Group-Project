@@ -141,6 +141,89 @@ def accept_application_command(application_id, user_id):
         db.session.rollback()
         print(f'✗ Error accepting application: {e}')
         
+
+
+@application_cli.command("reject", help="Reject an internship application")
+@click.argument("application_id", type=int)
+@click.option("--user-id", type=int, help="User ID performing the action (must be employer)")
+@with_appcontext
+def reject_application_command(application_id, user_id):
+    """Reject an application - transitions it to the rejected state."""
+    application = Application.query.get(application_id)
+    if not application:
+        print(f'✗ Application with ID {application_id} not found')
+        return
+
+    user = None
+    if user_id:
+        user = User.query.get(user_id)
+        if not user:
+            print(f'✗ User with ID {user_id} not found')
+            return
+
+    try:
+        old_state = application.state_name
+        application.reject(user=user)  
+        db.session.commit()
+
+        user_info = f" by {user.username} ({user.role})" if user else ""
+        print(f'✓ Application rejected{user_info}!')
+        print(f'  Previous State: {old_state}')
+        print(f'  Current State: {application.state_name}')
+
+    except PermissionError as e:
+        print(f'✗ Permission denied: {e}')
+    except ValueError as e:
+        print(f'✗ Cannot reject application: {e}')
+    except Exception as e:
+        db.session.rollback()
+        print(f'✗ Error rejecting application: {e}')
+
+
+@application_cli.command("shortlist", help="Shortlist an internship application")
+@click.argument("application_id", type=int)
+@click.option("--user-id", type=int, help="User ID performing the action (must be staff)")
+@with_appcontext
+def shortlist_application_command(application_id, user_id):
+    """Shortlist an application - marks it as priority for review."""
+    application = Application.query.get(application_id)
+    if not application:
+        print(f'✗ Application with ID {application_id} not found')
+        return
+
+    user = None
+    if user_id:
+        user = User.query.get(user_id)
+        if not user:
+            print(f'✗ User with ID {user_id} not found')
+            return
+
+    try:
+        old_state = application.state_name
+        application.shortlist(user=user) 
+        db.session.commit()
+
+        user_info = f" by {user.username} ({user.role})" if user else ""
+        print(f'✓ Application shortlisted successfully{user_info}!')
+        print(f'  Previous State: {old_state}')
+        print(f'  Current State: {application.state_name}')
+        print(f'  Application marked as priority for review')
+
+    except PermissionError as e:
+        print(f'✗ Permission denied: {e}')
+    except ValueError as e:
+        print(f'✗ Cannot shortlist application: {e}')
+    except Exception as e:
+        db.session.rollback()
+        print(f'✗ Error shortlisting application: {e}')
+
+
+
+
+
+
+
+
 @application_cli.command("list_all_applications", help="List all applications for a position")
 @click.argument("position_id", type=int)
 @with_appcontext
@@ -185,3 +268,5 @@ def demo_application_command(position_id, student_id, staff_id):
 
 
 app.cli.add_command(application_cli)
+
+
