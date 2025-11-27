@@ -347,4 +347,28 @@ def list_applications_by_position_command(position_id):
         print(f'State: {application.state_name}')
         print(f'Date Created: {application.created_at}')
 
+
+@application_cli.command("demo", help="showcase application state transitions")
+@click.argument("position-id", type=int, default=1)
+@click.argument("student-id", type=int, default=1)
+@click.argument("staff-id", type=int, default=1)
+@with_appcontext
+def demo_application_command(position_id, student_id, staff_id):
+    try:
+        application = Application(position_id=position_id, student_id=student_id, staff_id=staff_id, title="Demo Application"
+        )
+        db.session.add(application)
+        db.session.commit()
+        
+        print(f"Demo Application created. Application ID: {application.id}")
+        print(f"Initial State: {application.state_name}\n")
+        
+        print(f"Shortlist: {application.shortlist(staff_id)}\n")
+        print(f"New State: {application.state_name}\n")
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in demo: {e}")
+
+
 app.cli.add_command(application_cli)
