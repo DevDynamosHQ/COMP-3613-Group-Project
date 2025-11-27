@@ -215,3 +215,39 @@ def show_application_command(application_id):
     print(f'  Can Shortlist: {application.can_user_shortlist()}')
     print(f'  Created: {application.created_at}')
    # print(f'  Updated: {application.updated_at}')
+
+@application_cli.command("accept", help="Accept an internship application")
+@click.argument("application_id", type=int)
+@click.option("--user-id", type=int, help="User ID performing the action (must be employer)")
+@with_appcontext
+def accept_application_command(application_id, user_id):
+    """Accept an application - transitions it to the accepted state."""
+    application = Application.query.get(application_id)
+    if not application:
+        print(f'✗ Application with ID {application_id} not found')
+        return
+
+    user = None
+    if user_id:
+        user = User.query.get(user_id)
+        if not user:
+            print(f'✗ User with ID {user_id} not found')
+            return
+
+    try:
+        old_state = application.state_name
+        application.accept(user=user)  # state transition
+        db.session.commit()
+
+        user_info = f" by {user.username} ({user.role})" if user else ""
+        print(f'✓ Application accepted{user_info}!')
+        print(f'  Previous State: {old_state}')
+        print(f'  Current State: {application.state_name}')
+
+    except PermissionError as e:
+        print(f'✗ Permission denied: {e}')
+    except ValueError as e:
+        print(f'✗ Cannot accept application: {e}')
+    except Exception as e:
+        db.session.rollback()
+        print(f'✗ Error accepting application: {e}')
