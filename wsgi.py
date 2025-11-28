@@ -4,10 +4,24 @@ from flask.cli import with_appcontext, AppGroup
 from App.database import db, get_migrate
 from App.models import User
 from App.main import create_app
-from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize, open_position, add_student_to_shortlist, decide_shortlist, get_shortlist_by_student, get_shortlist_by_position, get_positions_by_employer)
+#from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize, open_position, add_student_to_shortlist, decide_shortlist, get_shortlist_by_student, get_shortlist_by_position, get_positions_by_employer)
+from App.controllers import (
+    create_user,
+    get_all_users_json,
+    get_all_users,
+    initialize,
+    open_position,
+    get_positions_by_employer
+)
+
 from App.models.application import Application
 from App.controllers.application import application_cli as app_application_cli
 
+from App.main import create_app
+from App.controllers import register_commands
+
+app = create_app()
+register_commands(app)
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 
@@ -29,7 +43,7 @@ User Commands
 # create a group, it would be the first argument of the comand
 # eg : flask user <command>
 user_cli = AppGroup('user', help='User object commands') 
-
+'''
 # Then define the command and any parameters and annotate it with the group (@)
 @user_cli.command("create", help="Creates a user")
 @click.argument("username", default="rob")
@@ -63,7 +77,7 @@ def add_position_command(title, employer_id, number):
     else:
         print(f'Employer {employer_id} does not exist')
 
-'''@user_cli.command("add_to_shortlist", help="Adds a student to a shortlist")
+@user_cli.command("add_to_shortlist", help="Adds a student to a shortlist")
 @click.argument("student_id", default=1)
 @click.argument("position_id", default=1)
 @click.argument("staff_id", default=1)
@@ -140,7 +154,7 @@ app.cli.add_command(user_cli)''' # add the group to the cli
 
 '''
 Test Commands
-'''
+
 
 test = AppGroup('test', help='Testing commands') 
 
@@ -157,9 +171,9 @@ def user_tests_command(type):
 
 app.cli.add_command(test)
 
-'''
+
 Application Commands - State Pattern Demo
-'''
+
 application_cli = AppGroup('application', help='Application object commands')
 
 @application_cli.command("create", help="Creates an internship application")
@@ -331,3 +345,4 @@ def shortlist_application_command(application_id, user_id):
 
 
 app.cli.add_command(application_cli)
+'''

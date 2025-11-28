@@ -14,8 +14,10 @@ from App.controllers import (
     add_auth_context
 )
 
-from App.views import views #setup_admin
+#from App.views.index import index_views
+#from App.views.user import user_views
 
+from App.views import views
 
 
 def add_views(app):
