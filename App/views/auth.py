@@ -3,12 +3,14 @@ from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, se
 
 
 from.index import index_views
-
+from App.controllers.auth import login
+from App.controllers.user import create_user
+'''
 from App.controllers import (
     login,
     create_user,
 )
-
+'''
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
 
