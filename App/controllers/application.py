@@ -7,7 +7,18 @@ from App.models import User
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize, open_position, add_student_to_shortlist, decide_shortlist, get_shortlist_by_student, get_shortlist_by_position, get_positions_by_employer)
 from App.models.application import Application
 
+from App.controllers.user import (
+    create_user, 
+    get_all_users_json, 
+    get_all_users
+)
 
+from App.controllers.initialize import initialize
+
+from App.controllers.position import (
+    open_position,
+    get_positions_by_employer
+)
 # This commands file allow you to create convenient CLI commands for testing controllers
 
 #app = create_app()
