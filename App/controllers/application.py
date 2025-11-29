@@ -267,6 +267,6 @@ def demo_application_command(position_id, student_id, staff_id):
         print(f"Error in demo: {e}")
 
 
-app.cli.add_command(application_cli)
+#app.cli.add_command(application_cli)
 
 
