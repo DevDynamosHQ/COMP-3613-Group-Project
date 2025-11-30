@@ -3,14 +3,14 @@ from App.database import db
 
 #edited
 
-def create_user(username, password, user_type, email= None):
+def create_user(username, user_id, password, user_type):
     try:
         if user_type == "student":
-            new_user = Student(username=username, password=password, email=email)
+            new_user = Student(username, user_id, password)
         elif user_type == "employer":
-            new_user = Employer(username=username, password=password, email=email)
+            new_user = Employer(username=username, password=password)
         elif user_type == "staff":
-            new_user = Staff(username=username, password=password, email=email)
+            new_user = Staff(username=username, password=password)
 
         db.session.add(new_user)
         db.session.commit()
@@ -18,7 +18,6 @@ def create_user(username, password, user_type, email= None):
 
     except Exception as e:
         db.session.rollback()
-        return False
 
 def get_user_by_username(username):
     result = db.session.execute(db.select(User).filter_by(username=username))

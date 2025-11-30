@@ -10,15 +10,16 @@ class Staff(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     role = db.Column(db.String(50), nullable=False, default="staff")
-
+    password = db.Column(db.String(128), nullable=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'staff'
     }
 
-    def __init__(self, username, user_id):
+    def __init__(self, username, user_id, password):
         self.username = username
         self.user_id = user_id
+        self.password = password
         self.role = "staff"
 
     def add_to_shortlist(self, student_id, position_id):

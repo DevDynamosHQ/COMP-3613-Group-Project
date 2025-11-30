@@ -40,6 +40,9 @@ def get_positions_by_employer(user_id):
     employer = Employer.query.filter_by(user_id=user_id).first()
     return db.session.query(Position).filter_by(employer_id=employer.id).all()
 
+def get_all_positions():
+    return Position.query.all()
+
 def get_all_positions_json():
     positions = Position.query.all()
     if positions:
