@@ -16,11 +16,12 @@ class Position(db.Model):
     
     employer = db.relationship("Employer", back_populates="positions")
 
-    def __init__(self, title, employer_id, number):
+    def __init__(self, title, employer_id, number, position_id):
         self.title = title
         self.employer_id = employer_id
         self.status = PositionStatus.open
         self.number_of_positions = number
+        self.position_id = position_id
         
 
     def update_status(self, status):
@@ -56,4 +57,4 @@ class Position(db.Model):
         }
 
     def __repr__(self):
-        return f"<Position {self.id}: {self.title} ({self.status.value})>"
+        return f"<Position {self.id}: {self.title} ({self.status.value}) posted by Employer {self.employer_id}>"

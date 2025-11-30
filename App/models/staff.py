@@ -9,14 +9,17 @@ class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
+    role = db.Column(db.String(50), nullable=False, default="staff")
+
 
     __mapper_args__ = {
         'polymorphic_identity': 'staff'
     }
 
-    def __init__(self, username, user_id):
+    def __init__(self, username, user_id, password):
         self.username = username
         self.user_id = user_id
+        self.role = "staff"
 
     def add_to_shortlist(self, student_id, position_id):
         student = db.session.get(Student, student_id)
@@ -32,6 +35,15 @@ class Staff(db.Model):
         db.session.add(application)
         db.session.commit()
         return application
+    
+    def can_shortlist_application(self, application):
+        return True
+    
+    def can_accept_application(self, application):
+        return False
+    
+    def can_reject_application(self, application):
+        return False
 
     def get_json(self):
         return {

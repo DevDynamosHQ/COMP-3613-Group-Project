@@ -4,27 +4,39 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import date
 
 #edited.
-class Student(db.Model):
- 
+class Student(User):
+    __tablename__ = 'student'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
     username =  db.Column(db.String(20), nullable=False, unique=True)
-    email = db.Column(db.String(256))
-    dob = db.Column(db.Date)
-    gender = db.Column(db.String(256))
-    degree = db.Column(db.String(256))
-    phone = db.Column(db.String(256))
-    gpa = db.Column(db.Float)
-    resume = db.Column(db.String(256))
+    #email = db.Column(db.String(256))
+    #dob = db.Column(db.Date)
+    #gender = db.Column(db.String(256))
+    #degree = db.Column(db.String(256))
+    #phone = db.Column(db.String(256))
+    #gpa = db.Column(db.Float)
+    #resume = db.Column(db.String(256))
+    password = db.Column(db.String(256), nullable=False)
+    role = db.Column(db.String(50), nullable=False, default="student")
+
 
     __mapper_args__ = {
         "polymorphic_identity": "student",
     }
-
-    def __init__(self, username, user_id, email = None):
+    def __init__(self, username, user_id, password):
         self.username = username
         self.user_id = user_id
-        self.email = email
+        self.password = password
+        self.role = "student"
+
+    def can_shortlist_application(self, application):
+        return False
+    
+    def can_accept_application(self, application):
+        return False
+
+    def can_reject_application(self, application):
+        return False
 
 
 
@@ -42,13 +54,13 @@ class Student(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'username': self.username,
-            'email': self.email,
-            'degree': self.degree,
-            'phone': self.phone,
-            'gender': self.gender,
-            'gpa': self.gpa,
-            'resume': self.resume,
-            'age': self.age
+            #'email': self.email,
+            #'degree': self.degree,
+            #'phone': self.phone,
+            #'gender': self.gender,
+            #'gpa': self.gpa,
+            #'resume': self.resume,
+            #'age': self.age
         }
 #    def update_DOB(self, date):
 #        self.DOB = date
@@ -62,3 +74,4 @@ class Student(db.Model):
 #       today = date.today()
 #       dob = self.DOB
 #       return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+

@@ -10,13 +10,14 @@ class User(db.Model):
     password = db.Column(db.String(256), nullable=False)
     role = db.Column(db.String(50), nullable=False)
 
-    __mapper_args__ = {
-        "polymorphic_on": role,             
-        "polymorphic_identity": "user"      
+    __mapper_args__ = {             
+        "polymorphic_identity": "user",
+        "polymorphic_on": "role"     
     }
 
     
-    def __init__(self, username, password, role = "user"):
+    def __init__(self, id, username, password, role):
+        self.id = id
         self.username = username
         self.set_password(password)
         self.role = role
@@ -35,5 +36,9 @@ class User(db.Model):
     def check_password(self, password):
         """Check hashed password."""
         return check_password_hash(self.password, password)
+        
+    
+    def __repr__(self):
+        return f"<User {self.username}>"
         
 

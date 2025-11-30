@@ -1,11 +1,11 @@
 from App.models import Position, Employer, PositionStatus
 from App.database import db
 
-def create_new_position(user_id, title, number_of_positions=1):
+def create_new_position(user_id, title, number_of_positions, position_id):
     employer = Employer.query.filter_by(user_id=user_id).first()
     if not employer:
         return None
-    new_position = Position(title=title, number=number_of_positions, employer_id=employer.id)
+    new_position = Position(title, employer.id, number_of_positions, position_id)
     db.session.add(new_position)
     try:
         db.session.commit()
@@ -39,6 +39,9 @@ def open_position(user_id, position_id):
 def get_positions_by_employer(user_id):
     employer = Employer.query.filter_by(user_id=user_id).first()
     return db.session.query(Position).filter_by(employer_id=employer.id).all()
+
+def get_all_positions():
+    return Position.query.all()
 
 def get_all_positions_json():
     positions = Position.query.all()
