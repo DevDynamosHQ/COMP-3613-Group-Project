@@ -54,13 +54,13 @@ class Student(User):
             'id': self.id,
             'user_id': self.user_id,
             'username': self.username,
-            'email': self.email,
-            'degree': self.degree,
-            'phone': self.phone,
-            'gender': self.gender,
-            'gpa': self.gpa,
-            'resume': self.resume,
-            'age': self.age
+            #'email': self.email,
+            #'degree': self.degree,
+            #'phone': self.phone,
+            #'gender': self.gender,
+            #'gpa': self.gpa,
+            #'resume': self.resume,
+            #'age': self.age
         }
 #    def update_DOB(self, date):
 #        self.DOB = date

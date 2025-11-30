@@ -57,4 +57,4 @@ class Position(db.Model):
         }
 
     def __repr__(self):
-        return f"<Position {self.id}: {self.title} ({self.status.value})>"
+        return f"<Position {self.id}: {self.title} ({self.status.value}) posted by Employer {self.employer_id}>"
