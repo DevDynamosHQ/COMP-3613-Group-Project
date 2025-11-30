@@ -2,10 +2,8 @@ from App.models import Employer
 from App.database import db
 
 
-def create_employer(username, user_id):
-    employer = Employer(
-        username=username,
-        user_id=user_id
+def create_employer(username, password, user_id):
+    employer = Employer(username, password, user_id
     )
     db.session.add(employer)
     db.session.commit()

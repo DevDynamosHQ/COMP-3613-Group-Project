@@ -62,11 +62,11 @@ class Application(db.Model):
         return user.can_reject_application(self)
 
 
-    def shortlist(self, user=None):
+    def shortlist(self, user):
         if user and not self.can_user_shortlist(user):
             raise PermissionError(f"User '{user.username}' ({user.role}) cannot shortlist this application.")
 
-        self.state.shortlist(self)
+        self._state = ShortlistedState()
         self.state_name = self._state.get_state_name()
         return True
 
@@ -75,7 +75,7 @@ class Application(db.Model):
         if user and not self.can_user_accept(user):
             raise PermissionError(f"User '{user.username}' ({user.role}) cannot accept this application.")
 
-        self.state.accept(self)
+        self._state = AcceptedState()
         self.state_name = self._state.get_state_name()
         return True
 
@@ -84,7 +84,7 @@ class Application(db.Model):
         if user and not self.can_user_reject(user):
             raise PermissionError(f"User '{user.username}' ({user.role}) cannot reject this application.")
 
-        self.state.reject(self)
+        self._state = RejectedState()
         self.state_name = self._state.get_state_name()
         return True
 

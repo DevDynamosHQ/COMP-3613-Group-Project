@@ -7,10 +7,23 @@ class Employer(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
     username =  db.Column(db.String(20), nullable=False, unique=True)
     positions = db.relationship("Position", back_populates="employer")
+    password = db.Column(db.String(256), nullable=False)
+    role = db.Column(db.String(50), nullable=False, default="employer")
 
-    def __init__(self, username, user_id):
+    def __init__(self, username, password, user_id):
         self.username = username
+        self.password = password
         self.user_id = user_id
+        self.role = "employer"
+
+    def can_shortlist_application(self, application):
+        return False
+    
+    def can_accept_application(self, application):
+        return True
+    
+    def can_reject_application(self, application):
+        return True
 
     def toJSON(self):
         return {
