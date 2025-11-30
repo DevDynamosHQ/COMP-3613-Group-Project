@@ -103,7 +103,7 @@ def show_application_command(application_id):
         print(f'✗ Application with ID {application_id} not found')
         return
 
-    print(f'\n📄 Application Details:')
+    print(f'\nApplication Details:')
     print(f'  ID: {application.id}')
     print(f'  Title: {application.title}')
     print(f'  Position ID: {application.position_id}')
@@ -140,17 +140,17 @@ def accept_application_command(application_id, user_id):
         db.session.commit()
 
         user_info = f" by {user.username} ({user.role})" if user else ""
-        print(f'✓ Application accepted{user_info}!')
+        print(f' Application accepted{user_info}!')
         print(f'  Previous State: {old_state}')
         print(f'  Current State: {application.state_name}')
 
     except PermissionError as e:
-        print(f'✗ Permission denied: {e}')
+        print(f' Permission denied: {e}')
     except ValueError as e:
-        print(f'✗ Cannot accept application: {e}')
+        print(f' Cannot accept application: {e}')
     except Exception as e:
         db.session.rollback()
-        print(f'✗ Error accepting application: {e}')
+        print(f' Error accepting application: {e}')
         
 
 
@@ -162,14 +162,14 @@ def reject_application_command(application_id, user_id):
     """Reject an application - transitions it to the rejected state."""
     application = Application.query.get(application_id)
     if not application:
-        print(f'✗ Application with ID {application_id} not found')
+        print(f' Application with ID {application_id} not found')
         return
 
     user = None
     if user_id:
         user = User.query.get(user_id)
         if not user:
-            print(f'✗ User with ID {user_id} not found')
+            print(f' User with ID {user_id} not found')
             return
 
     try:
@@ -178,17 +178,17 @@ def reject_application_command(application_id, user_id):
         db.session.commit()
 
         user_info = f" by {user.username} ({user.role})" if user else ""
-        print(f'✓ Application rejected{user_info}!')
+        print(f' Application rejected{user_info}!')
         print(f'  Previous State: {old_state}')
         print(f'  Current State: {application.state_name}')
 
     except PermissionError as e:
-        print(f'✗ Permission denied: {e}')
+        print(f' Permission denied: {e}')
     except ValueError as e:
-        print(f'✗ Cannot reject application: {e}')
+        print(f' Cannot reject application: {e}')
     except Exception as e:
         db.session.rollback()
-        print(f'✗ Error rejecting application: {e}')
+        print(f' Error rejecting application: {e}')
 
 
 @application_cli.command("shortlist", help="Shortlist an internship application")
@@ -199,14 +199,14 @@ def shortlist_application_command(application_id, user_id):
     """Shortlist an application - marks it as priority for review."""
     application = Application.query.get(application_id)
     if not application:
-        print(f'✗ Application with ID {application_id} not found')
+        print(f' Application with ID {application_id} not found')
         return
 
     user = None
     if user_id:
         user = User.query.get(user_id)
         if not user:
-            print(f'✗ User with ID {user_id} not found')
+            print(f' User with ID {user_id} not found')
             return
 
     try:
@@ -215,18 +215,18 @@ def shortlist_application_command(application_id, user_id):
         db.session.commit()
 
         user_info = f" by {user.username} ({user.role})" if user else ""
-        print(f'✓ Application shortlisted successfully{user_info}!')
+        print(f' Application shortlisted successfully{user_info}!')
         print(f'  Previous State: {old_state}')
         print(f'  Current State: {application.state_name}')
         print(f'  Application marked as priority for review')
 
     except PermissionError as e:
-        print(f'✗ Permission denied: {e}')
+        print(f' Permission denied: {e}')
     except ValueError as e:
-        print(f'✗ Cannot shortlist application: {e}')
+        print(f' Cannot shortlist application: {e}')
     except Exception as e:
         db.session.rollback()
-        print(f'✗ Error shortlisting application: {e}')
+        print(f' Error shortlisting application: {e}')
 
 
 

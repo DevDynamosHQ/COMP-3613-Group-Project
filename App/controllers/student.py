@@ -3,8 +3,8 @@ from App.database import db
 
 #edited
 
-def create_student(username, password, email=None):
-    student = Student(username=username, password=password, email=email)
+def create_student(username, password, id):
+    student = Student(username=username, user_id=id, password=password)
     db.session.add(student)
     db.session.commit()
     return student

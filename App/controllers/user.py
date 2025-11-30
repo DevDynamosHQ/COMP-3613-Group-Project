@@ -11,8 +11,6 @@ def create_user(username, password, user_type, email= None):
             new_user = Employer(username=username, password=password, email=email)
         elif user_type == "staff":
             new_user = Staff(username=username, password=password, email=email)
-        else:
-            return False
 
         db.session.add(new_user)
         db.session.commit()
