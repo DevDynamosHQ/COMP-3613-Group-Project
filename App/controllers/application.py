@@ -95,8 +95,3 @@ def get_shortlist_by_position(position_id):
     return db.session.execute(
         db.select(Shortlist).filter_by(position_id=position_id)
     ).scalars().all()
-
-
-
-
-

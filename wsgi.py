@@ -339,12 +339,6 @@ def shortlist_application_command(application_id, user_id):
         print(f' Error shortlisting application: {e}')
 
 
-
-
-
-
-
-
 @application_cli.command("list_all_applications", help="List all applications for a position")
 @click.argument("position_id", type=int)
 @with_appcontext
@@ -389,3 +383,10 @@ def demo_application_command(position_id, student_id, staff_id):
 
 
 app.cli.add_command(application_cli)
+
+
+
+
+
+
+  
