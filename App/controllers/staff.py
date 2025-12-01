@@ -14,6 +14,7 @@ def get_all_staff_json():
     staff = get_all_staff()
     return [s.get_json() for s in staff] if staff else []
 
+
 def update_staff(staff_id, username=None, email=None):
     staff = get_staff(staff_id)
 
@@ -29,6 +30,7 @@ def update_staff(staff_id, username=None, email=None):
     try:
         db.session.commit()
         return True
+    
     except Exception as e:
         db.session.rollback()
         print(f"Error updating staff: {e}")

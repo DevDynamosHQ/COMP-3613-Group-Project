@@ -10,7 +10,6 @@ def get_all_employers():
     return db.session.scalars(db.select(Employer)).all()
 
 
-
 def get_all_employers_json():
     employers = get_all_employers()
     return [e.get_json() for e in employers] if employers else []

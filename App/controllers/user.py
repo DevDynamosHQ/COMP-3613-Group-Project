@@ -47,13 +47,13 @@ def create_user(username, user_id, password, user_type):
         db.session.rollback()
 '''
 
+def get_user(user_id):
+    return db.session.get(User, user_id)
+
+
 def get_user_by_username(username):
     result = db.session.execute(db.select(User).filter_by(username=username))
     return result.scalar_one_or_none()
-
-
-def get_user(id):
-    return db.session.get(User, id)
 
 
 def get_all_users():

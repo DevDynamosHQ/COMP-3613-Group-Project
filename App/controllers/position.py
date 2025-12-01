@@ -1,5 +1,6 @@
 from App.models import Position, Employer
 from App.database import db
+from App.models.position import PositionStatus
 
 def open_position(employer_id, title, number_of_positions, description=None):
     new_position = Position(title=title, number_of_positions=number_of_positions, employer_id=employer_id, description=description)
@@ -14,23 +15,29 @@ def open_position(employer_id, title, number_of_positions, description=None):
         print(f"Error creating position: {e}")
         return None
 
+def get_position(position_id):
+    return db.session.get(Position, position_id)
+
+
 def get_positions_by_employer(employer_id):
     return db.session.query(Position).filter_by(employer_id=employer_id).all()
+
+def get_all_positions():
+    return db.session.query(Position).all()
+
+
+def get_all_open_positions():
+    return db.session.query(Position).filter_by(status=PositionStatus.open).all()
+
 
 def get_positions_by_employer_json(employer_id):
     positions = get_positions_by_employer(employer_id)
     return [position.get_json() for position in positions] if positions else []
 
-def get_all_positions():
-    return db.session.query(Position).all()
 
 def get_all_positions_json():
     positions = get_all_positions()
     return [position.get_json() for position in positions] if positions else []
-
-
-def get_all_open_positions():
-    return db.session.query(Position).filter_by(status='open').all()
 
 
 def update_position(position_id, title=None, description=None, number_of_positions=None, status=None, employer_id=None):
@@ -51,7 +58,8 @@ def update_position(position_id, title=None, description=None, number_of_positio
         position.number_of_positions = number_of_positions
 
     if status is not None:
-        position.status = status
+        position.status = PositionStatus(status)
+
     
     try:
         db.session.commit()

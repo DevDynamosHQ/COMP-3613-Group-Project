@@ -52,8 +52,8 @@ def update_student(student_id, email=None, dob=None, gender=None, degree=None, p
         return False
 
 
-def delete_student(id):
-    student = get_student(id)
+def delete_student(student_id):
+    student = get_student(student_id)
     if not student:
         return None
 
