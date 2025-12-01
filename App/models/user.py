@@ -9,6 +9,7 @@ class User(db.Model):
     username =  db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(256), nullable=False)
     role = db.Column(db.String(50), nullable=False)
+    positions = db.relationship('Position', back_populates='employer', lazy=True)
 
     __mapper_args__ = {             
         "polymorphic_identity": "user",
@@ -16,8 +17,8 @@ class User(db.Model):
     }
 
     
-    def __init__(self, id, username, password, role):
-        self.id = id
+    def __init__(self, username, password, role):
+        #self.id = id
         self.username = username
         self.set_password(password)
         self.role = role
@@ -41,4 +42,11 @@ class User(db.Model):
     def __repr__(self):
         return f"<User {self.username}>"
         
+    def can_shortlist_application(self, application):
+        return False
 
+    def can_accept_application(self, application):
+        return False
+
+    def can_reject_application(self, application):
+        return False

@@ -45,6 +45,7 @@ user_cli = AppGroup('user', help='User object commands')
 
 # Then define the command and any parameters and annotate it with the group (@)
 #FIXED
+'''
 @user_cli.command("create", help="Creates a user")
 @click.argument("username", default="rob")
 @click.argument("user_id", default = 1)
@@ -58,8 +59,28 @@ def create_user_command(username, user_id, password, user_type):
     else:
         print("User creation failed")
 # this command will be : flask user create bob bobpass
+'''
+@app.cli.command("create-user")
+@click.argument("username")
+@click.argument("user_id")
+@click.argument("password")
+@click.argument("role")
+def create_user_command(username, user_id, password, role):
+    try:
+        result = create_user(username, user_id, password, role)
+        
+        if result and hasattr(result, 'get_json'):
+            print(result.get_json())
+        else:
+            print(f"User created successfully: {username}")
+            
+        return result 
+        
+    except Exception as e:
+        print(f"Error creating user: {str(e)}")
+        return None
 
-#TO FIX: Only outputs students!!
+#FIXED
 @user_cli.command("list", help="Lists users in the database")
 @click.argument("format", default="string")
 def list_user_command(format):
@@ -92,16 +113,38 @@ def view_all_positions_command(format):
         print(get_all_positions_json())
 
 #TO DO: OPEN AND CLOSE POSITION COMMANDS
+@user_cli.command("open_position", help="Opens a position")
+@click.argument("employer_id", default=1)
+@click.argument("position_id", default=1)
+def open_position_command(employer_id, position_id):
+    from App.controllers.position import open_position
+    result = open_position(employer_id, position_id)
+    if result:
+        print(f'Position {position_id} opened successfully')
+    else:
+        print(f'Failed to open position {position_id}')
 
+
+@user_cli.command("close_position", help="Closes a position")
+@click.argument("employer_id", default=1)
+@click.argument("position_id", default=1)
+def close_position_command(employer_id, position_id):
+    from App.controllers.position import close_position
+    result = close_position(employer_id, position_id)
+    if result:
+        print(f'Position {position_id} closed successfully')
+    else:
+        print(f'Failed to close position {position_id}')
 
 #TO FIX
 @user_cli.command("add_to_shortlist", help="Adds a student to a shortlist")
 @click.argument("student_id", default=1)
 @click.argument("position_id", default=1)
-@click.argument("staff_id", default=201)
+@click.argument("staff_id", default=3)
 def add_to_shortlist_command(student_id, position_id, staff_id):
+    from App.controllers.application import add_student_to_shortlist
     test = add_student_to_shortlist(student_id, position_id, staff_id)
-    if hasattr(test, "position_id"):
+    if test and hasattr(test, "id"):
         print(f'Student {student_id} added to shortlist for position {position_id}')
     else:
         print("Student could not be added to shortlist")
@@ -111,6 +154,7 @@ def add_to_shortlist_command(student_id, position_id, staff_id):
 @click.argument("position_id", default=1)
 @click.argument("decision", default="accepted")
 def decide_shortlist_command(student_id, position_id, decision):
+    from App.controllers.application import decide_shortlist
     test = decide_shortlist(student_id, position_id, decision)
     if test:
         print(f'Student {student_id} is {decision} for position {position_id}')
@@ -122,6 +166,7 @@ def decide_shortlist_command(student_id, position_id, decision):
 @user_cli.command("get_shortlist", help="Gets a shortlist for a student")
 @click.argument("student_id", default=1)
 def get_shortlist_command(student_id):
+    from App.controllers.application import get_shortlist_by_student
     list = get_shortlist_by_student(student_id)
     if list:
         for item in list:
@@ -135,9 +180,11 @@ def get_shortlist_command(student_id):
 @user_cli.command("get_shortlist_by_position", help="Gets a shortlist for a position")
 @click.argument("position_id", default=1)
 def get_shortlist_by_position_command(position_id):
+    from App.controllers.application import get_shortlist_by_position
     list = get_shortlist_by_position(position_id)
     if list:
         for item in list:
+            position = item.position
             print(f'Student {item.student_id} is {item.status.value} for {item.position.title} id: {item.position_id}')
             print(f'    Staff {item.staff_id} added this student to the shortlist')
             print(f'    Position {item.position_id} is {item.position.status.value}')
