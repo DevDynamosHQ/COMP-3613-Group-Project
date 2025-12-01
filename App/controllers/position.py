@@ -40,12 +40,13 @@ def get_all_positions_json():
     return [position.get_json() for position in positions] if positions else []
 
 
-def update_position(position_id, title=None, description=None, number_of_positions=None, status=None, employer_id=None):
-    position = db.session.get(Position, position_id)
+def update_position(position_id, employer_id, title=None, description=None, number_of_positions=None, status=None):
+    position = get_position(position_id)
+
     if not position:
         return False
     
-    if not employer_id or position.employer_id != employer_id:
+    if employer_id is None or position.employer_id != employer_id:
         return False
     
     if title is not None:
@@ -60,7 +61,6 @@ def update_position(position_id, title=None, description=None, number_of_positio
     if status is not None:
         position.status = PositionStatus(status)
 
-    
     try:
         db.session.commit()
         return True
@@ -69,3 +69,4 @@ def update_position(position_id, title=None, description=None, number_of_positio
         db.session.rollback()
         print(f"Error updating position: {e}")
         return False
+    
