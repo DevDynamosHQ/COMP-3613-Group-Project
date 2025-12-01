@@ -1,29 +1,21 @@
 from App.models import Staff
 from App.database import db
 
-def create_staff(username, password):
-    staff = Staff(username, password)
-    #staff = Staff(username=username,user_id = user_id, password=password)
-    staff.password = password
-    db.session.add(staff)
-    db.session.commit()
-    return staff
 
-def get_staff(id):
-    return db.session.get(Staff, id)
+def get_staff(staff_id):
+    return db.session.get(Staff, staff_id)
 
-def get_staff_by_user(user_id):
-    return db.session.execute(db.select(Staff).filter_by(user_id=user_id)).scalar_one_or_none()
 
 def get_all_staff():
     return db.session.scalars(db.select(Staff)).all()
 
-def get_all_staff_json():
-    Staff = get_all_staff()
-    return [s.get_json() for s in staff]
 
-def update_staff(id, username):
-    staff = get_staff(id)
+def get_all_staff_json():
+    staff = get_all_staff()
+    return [s.get_json() for s in staff] if staff else []
+
+def update_staff(staff_id, username=None, email=None):
+    staff = get_staff(staff_id)
 
     if not staff:
         return None
@@ -31,11 +23,20 @@ def update_staff(id, username):
     if username is not None:
         staff.username = username
 
-    db.session.commit()
-    return staff
+    if email is not None:
+        staff.email = email
 
-def delete_staff(id):
-    staff = get_staff(id)
+    try:
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating staff: {e}")
+        return False
+
+
+def delete_staff(staff_id):
+    staff = get_staff(staff_id)
     if not staff:
         return None
 

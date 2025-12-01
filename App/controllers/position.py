@@ -1,105 +1,63 @@
-from App.models import User, Position, Employer, PositionStatus
+from App.models import Position, Employer
 from App.database import db
-'''
-def create_new_position(user_id, title, number_of_positions, position_id):
-    employer = Employer.query.filter_by(user_id=user_id).first()
-    if not employer:
-        return None
-    new_position = Position(title, employer.id, number_of_positions, position_id)
-    db.session.add(new_position)
-    try:
-        db.session.commit()
-        return new_position
-    except Exception as e:
-        db.session.rollback()
-        return None
-'''
-def create_new_position(employer_id, title, number, position_id):
 
-    employer = User.query.get(employer_id)
-    
-    if not employer or employer.role != "employer":
-        return None
-    
-    new_position = Position(
-        title=title,
-        employer_id=employer_id,  
-        number=number,
-        position_id=position_id
-    )
-    
+def open_position(employer_id, title, number_of_positions, description=None):
+    new_position = Position(title=title, number_of_positions=number_of_positions, employer_id=employer_id, description=description)
     db.session.add(new_position)
+
     try:
         db.session.commit()
         return new_position
+    
     except Exception as e:
         db.session.rollback()
         print(f"Error creating position: {e}")
         return None
-def open_position(employer_id, position_id):
-    #stat = PositionStatus.open
-    employer = User.query.get(employer_id)
-    if not employer or employer.role != "employer":
-        return None
-    
-    position = Position.query.get(position_id)
-    if not position:
-        return None
-    
-    if position.employer_id != employer.id:
-        return None 
-
-    try:
-        
-        position.status = "open" 
-        db.session.commit()
-        return position
-    except Exception as e:
-        db.session.rollback()
-        print(f"Error opening position: {e}")
-        return None
-
-    
-
 
 def get_positions_by_employer(employer_id):
-    #employer = Employer.query.filter_by(user_id=user_id).first()
-    return Position.query.filter_by(employer_id=employer.id).all()
+    return db.session.query(Position).filter_by(employer_id=employer_id).all()
+
+def get_positions_by_employer_json(employer_id):
+    positions = get_positions_by_employer(employer_id)
+    return [position.get_json() for position in positions] if positions else []
 
 def get_all_positions():
-    return Position.query.all()
+    return db.session.query(Position).all()
 
 def get_all_positions_json():
-    positions = Position.query.all()
-    if positions:
-        return [position.toJSON() for position in positions]
-    return []
+    positions = get_all_positions()
+    return [position.get_json() for position in positions] if positions else []
 
-def get_positions_by_employer_json(user_id):
-    employer = Employer.query.filter_by(user_id=user_id).first()
-    positions = db.session.query(Position).filter_by(employer_id=employer.id).all()
-    if positions:
-        return [position.toJSON() for position in positions]
-    return []
 
-def close_position(user_id, position_id):
-    #stat = PositionStatus.closed
-    employer = Employer.query.get(employer_id)
-    if not employer or employer.role != "employer":
-        return None
-    
-    position = Position.query.get(position_id)
+def get_all_open_positions():
+    return db.session.query(Position).filter_by(status='open').all()
+
+
+def update_position(position_id, title=None, description=None, number_of_positions=None, status=None, employer_id=None):
+    position = db.session.get(Position, position_id)
     if not position:
-        return None
+        return False
     
-    if position.employer_id != employer.id:
-        return None
+    if not employer_id or position.employer_id != employer_id:
+        return False
+    
+    if title is not None:
+        position.title = title
+
+    if description is not None:
+        position.description = description
+
+    if number_of_positions is not None:
+        position.number_of_positions = number_of_positions
+
+    if status is not None:
+        position.status = status
     
     try:
-        position.status = "closed"
         db.session.commit()
-        return position
+        return True
+    
     except Exception as e:
         db.session.rollback()
-        print(f"Error closing position: {e}")
-        return None
+        print(f"Error updating position: {e}")
+        return False
