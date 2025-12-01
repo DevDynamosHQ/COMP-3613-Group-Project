@@ -3,8 +3,9 @@ from App.database import db
 
 #edited
 
-def create_student(username, password, id):
-    student = Student(username=username, user_id=id, password=password)
+def create_student(username, password):
+    student = Student(username, password)
+    #student = Student(username=username, user_id=id, password=password)
     db.session.add(student)
     db.session.commit()
     return student

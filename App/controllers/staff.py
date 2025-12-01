@@ -1,8 +1,9 @@
 from App.models import Staff
 from App.database import db
 
-def create_staff(username, user_id, password):
-    staff = Staff(username=username,user_id = user_id, password=password)
+def create_staff(username, password):
+    staff = Staff(username, password)
+    #staff = Staff(username=username,user_id = user_id, password=password)
     staff.password = password
     db.session.add(staff)
     db.session.commit()
