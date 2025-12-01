@@ -28,25 +28,6 @@ def create_user(username, password, role):
         return False
 
 
-#edited
-'''
-def create_user(username, user_id, password, user_type):
-    try:
-        if user_type == "student":
-            new_user = Student(username, user_id, password)
-        elif user_type == "employer":
-            new_user = Employer(username=username, password=password)
-        elif user_type == "staff":
-            new_user = Staff(username=username, password=password)
-
-        db.session.add(new_user)
-        db.session.commit()
-        return new_user
-
-    except Exception as e:
-        db.session.rollback()
-'''
-
 def get_user(user_id):
     return db.session.get(User, user_id)
 
