@@ -184,7 +184,7 @@ def view_positions_command(employer_id):
             print(f'    Description: {pos.description}')
             print(f'    Employer ID: {pos.employer_id}')
             print(f'    Number of slots: {pos.number_of_positions}')
-            print(f'    Status: {pos.status}')
+            print(f'    Status: {pos.status.value}')
             print("\n\n__________________________________________________________________________\n\n")
     else:
         print("No positions available")
