@@ -16,7 +16,7 @@ def initialize():
     student2 = create_user('gary', 'garypass', "student")
 
     employer1 = create_user('frank', 'frankpass', "employer")
-    employer2 = create_user('rob', 'robpass', "employer")
+    employer2 = create_user('diana', 'dianapass', "employer")
 
     staff1 = create_user('john', 'johnpass', "staff")
     staff2 = create_user('sara', 'sarapass', "staff")
