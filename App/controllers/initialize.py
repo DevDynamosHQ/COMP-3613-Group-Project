@@ -35,19 +35,18 @@ def initialize():
     position2 = open_position(employer_id=employer1.id, title='Mechanical Engineer', number_of_positions= 6, description='Design and develop mechanical systems.')
     position3 = open_position(employer_id=employer2.id, title='Software Engineer', number_of_positions= 6, description='Develop and maintain software applications.')
 
-    print(f"Created position: {position1.title}")
-    print(f"Created position: {position2.title}")
-    print(f"Created position: {position3.title}")
+    print(f"Created position: Position ID: {position1.id} Title: {position1.title}")
+    print(f"Created position: Position ID: {position2.id} Title: {position2.title}")
+    print(f"Created position: Position ID: {position3.id} Title: {position3.title}")
 
     
     # Create Applications in different states
     print("\nCreating applications in different states...")
 
-    application1 = create_application(student_id=student1.id, position_id=1)
-    application2 = create_application(student_id=student1.id, position_id=2)
-
-    application3 = create_application(student_id=student2.id, position_id=1)
-    application4 = create_application(student_id=student2.id, position_id=2)
+    application1 = create_application(student_id=student1.id, position_id=position1.id)
+    application2 = create_application(student_id=student1.id, position_id=position2.id)
+    application3 = create_application(student_id=student2.id, position_id=position1.id)
+    application4 = create_application(student_id=student2.id, position_id=position2.id)
 
     print(f"Application 1 created: Application ID: {application1.id} (State: {application1.state_name})")
     print(f"Application 2 created: Application ID: {application2.id} (State: {application2.state_name})")
