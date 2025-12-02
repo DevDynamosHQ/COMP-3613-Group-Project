@@ -73,3 +73,9 @@ class StaffControllerIntegrationTests(unittest.TestCase):
 
         user = get_user(staff.id)
         assert user is None
+
+    
+    # Test that invalid staff id cannot be deleted
+    def test_delete_staff_with_invalid_id(self):
+        invalid_staff = delete_staff(9999) 
+        assert invalid_staff is None
