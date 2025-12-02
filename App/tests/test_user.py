@@ -74,3 +74,16 @@ class UserControllerIntegrationTests(unittest.TestCase):
 
         user_lookup = get_user_by_username("bob")
         assert user_lookup is None
+
+    
+    # Test to verify duplicate usernames are not created
+    def test_create_user_duplicate_username(self):
+        user1 = create_user("hannah", "pass123", "student")
+        assert user1 is not None
+
+        user2 = create_user("hannah", "differentpass", "student")
+        assert user2 is False
+
+        stored = get_user_by_username("hannah")
+        assert stored is not None
+        assert stored.id == user1.id  
