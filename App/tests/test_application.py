@@ -169,3 +169,29 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         stored_application = get_application(application.id)
         assert stored_application.state_name == "accepted"
+
+    
+    # Test accepting application with invalid inputs
+    def test_accept_application_invalid(self):
+        student = self.create_test_student()
+        employer = self.create_test_employer()
+        other_employer = self.create_test_employer(username="dave", password="davepass")
+        position = self.create_test_position(employer, number_of_positions=1)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        # Non-existent application
+        invalid_accept = accept_application(9999, employer.id)
+        assert invalid_accept is None
+
+        # Wrong employer
+        invalid_accept = accept_application(application.id, other_employer.id)
+        assert invalid_accept is None
+
+        # No empty positions left
+        position.number_of_positions = 0
+        db.session.commit()
+
+        invalid_accept = accept_application(application.id, employer.id)
+        assert invalid_accept is None
