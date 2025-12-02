@@ -251,3 +251,22 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         stored_application = get_application(application.id)
         assert stored_application is None
+
+    
+    # Test deleting application with invalid inputs
+    def test_delete_application_invalid(self):
+        student = self.create_test_student()
+        other_student = self.create_test_student(username="bob", password="bobpass")
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        # Wrong student attempts deletion
+        result = delete_application(application.id, other_student.id)
+        assert result is None
+
+        # Non-existent application ID
+        result = delete_application(9999, student.id)
+        assert result is None
