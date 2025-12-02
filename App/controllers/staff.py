@@ -39,9 +39,17 @@ def update_staff(staff_id, username=None, email=None):
 
 def delete_staff(staff_id):
     staff = get_staff(staff_id)
+
     if not staff:
         return None
 
-    db.session.delete(staff)
-    db.session.commit()
-    return True
+    try:
+        db.session.delete(staff)
+        db.session.commit()
+        return True
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting staff: {e}")
+        return False
+
