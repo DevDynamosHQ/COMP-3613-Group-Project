@@ -59,3 +59,20 @@ class EmployerControllerIntegrationTests(unittest.TestCase):
     def test_update_employer_with_invalid_id(self):
         invalid_employer = update_employer(9999, username="sam_new", company_name="New Company", email="sam@example.com")
         assert invalid_employer is False
+
+    
+     # Test to verify employer was deleted from both Employer and User tables
+    def test_delete_employer(self):
+        employer = self.create_test_employer()
+
+        stored_employer = get_employer(employer.id)
+        assert stored_employer is not None
+
+        deleted_result = delete_employer(employer.id)
+        assert deleted_result is True
+
+        deleted_employer = get_employer(employer.id)
+        assert deleted_employer is None
+
+        user = get_user(employer.id)
+        assert user is None
