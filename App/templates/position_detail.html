@@ -1,14 +1,42 @@
-{% extends "layout.html" %}
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ position.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
 
-{% block title %}{{ position.title }}{% endblock %}
+<body>
+    <div class="page-container">
+        <div class="card-wrapper">
+            <div class="card hoverable">
+                <div class="top-bar">
+                    <a href="{{ url_for('student_views.student_dashboard') }}">
+                        <i class="material-icons left">arrow_back</i>Back to Dashboard
+                    </a>
+                </div>
 
-{% block content %}
-<h4>{{ position.title }}</h4>
+                <div class="card-content">
+                    <h5>{{ position.title }}</h5>
+                    <p><strong>Company:</strong> {{ position.employer.company_name }}</p>
+                    <p><strong>Description:</strong> {{ position.description }}</p>
+                    <p><strong>Capacity:</strong> {{ position.number_of_positions }}</p>
+                    <p><strong>Status:</strong> {{ position.status.value }}</p>
+                    <p><strong>Posted By:</strong> {{ position.employer.username }}</p>
 
-<p><strong>Company:</strong> {{ position.employer.company_name }}</p>
-<p><strong>Description:</strong> {{ position.description }}</p>
-<p><strong>Capacity:</strong> {{ position.number_of_positions }}</p>
-<p><strong>Status:</strong> {{ position.status.value }}</p>
+                    {% if current_user.role == 'student' %}
+                    <form action="{{ url_for('student_views.apply_internship', position_id=position.id) }}" method="POST">
+                        <button type="submit" class="btn-small purple">Apply</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
-<a href="{{ url_for('student_views.student_dashboard') }}" class="btn-small grey">Back to Dashboard</a>
-{% endblock %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
