@@ -378,3 +378,55 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Staff cannot reject
         rejected3 = reject_application(application.id, staff.id)
         assert rejected3 is None
+
+    
+    # Test application lifecycle and state transitions
+    def test_application_state_transitions(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position1 = self.create_test_position(employer, number_of_positions=2)
+        position2 = self.create_test_position(employer, "IT Support", number_of_positions=2)
+        
+
+        # Student applies
+        application1 = create_application(student.id, position1.id)
+        application2 = create_application(student.id, position2.id)
+
+        assert application1 is not None
+        stored1 = get_application(application1.id)
+        assert stored.state_name == "applied"
+
+        assert application2 is not None
+        stored2 = get_application(application2.id)
+        assert stored.state_name == "applied"
+
+
+        # Staff shortlists
+        shortlisted1 = shortlist_application(application1.id, staff.id)
+        shortlisted1 is not None
+        stored1 = get_application(application1.id)
+        assert stored1.state_name == "shortlisted"
+
+        shortlisted2 = shortlist_application(application2.id, staff.id)
+        shortlisted2 is not None
+        stored2 = get_application(application2.id)
+        assert stored2.state_name == "shortlisted"
+
+        # Employer accepts
+        accepted = accept_application(application1.id, employer.id)
+        assert accepted is not None
+        stored = get_application(application1.id)
+        assert stored.state_name == "accepted"
+    
+        # Confirm position slots decreased
+        stored_position = get_position(position1.id)
+        assert stored_position.number_of_positions == 1
+
+        # Employer rejects
+        rejected = reject_application(application2.id, employer.id)
+        assert rejected is not None
+        stored = get_application(application2.id)
+        assert stored.state_name == "rejected"
+    
+        
