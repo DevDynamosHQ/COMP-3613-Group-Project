@@ -26,30 +26,6 @@ class Position(db.Model):
         self.employer_id = employer_id
         self.number_of_positions = number_of_positions
         self.status = status
-        
-        
-
-    def update_status(self, status):
-        if isinstance(status, PositionStatus):
-            self.status = status
-        else:
-            stat = PositionStatus(status)
-            if isinstance(stat, PositionStatus):
-                self.status = stat
-        db.session.commit()
-        return self.status.value
-
-
-    def update_number_of_positions(self, number_of_positions):
-        self.number_of_positions = number_of_positions
-        db.session.commit()
-        return self.number_of_positions
-
-
-    def delete_position(self):
-        db.session.delete(self)
-        db.session.commit()
-        return
 
 
     def get_json(self):
