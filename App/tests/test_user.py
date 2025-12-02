@@ -7,7 +7,7 @@ from App.database import db, create_db
 
 from App.models import User, Student, Staff
 
-from App.controllers.user import create_user, get_user, get_user_by_username
+from App.controllers.user import create_user, get_user, get_user_by_username, get_all_users_json
 from App.controllers.student import get_student
 from App.controllers.staff import get_staff
 from App.controllers.employer import get_employer
@@ -110,4 +110,49 @@ class UserControllerIntegrationTests(unittest.TestCase):
         # Very long username
         user_long = create_user("a" * 300, "pass123", "student")
         assert user_long is False
+
+    
+    # Tests get all users in JSON format
+    def test_get_all_users_json(self):
+        user1 = create_user("hannah", "hannahpass", "student")
+        user2 = create_user("rick", "rickpass", "staff")
+        user3 = create_user("sam", "sampass", "employer")
+
+        assert user1 is not None
+        assert user2 is not None
+        assert user3 is not None
+
+        users_json = get_all_users_json()
+
+        expected_users = [
+            {
+                "id":user1.id, 
+                "username":"hannah", 
+                "role":"student", 
+                "email":None, 
+                "degree":None, 
+                "phone":None,
+                "gender":None,
+                "gpa":None,
+                "resume":None,
+                "age":None
+            }, 
+            {
+                "id":user2.id, 
+                "username":"rick", 
+                "role":"staff", 
+                "email":None
+            },
+            {
+                "id":user3.id, 
+                "username":"sam", 
+                "role":"employer", 
+                "email":None, 
+                "phone":None, 
+                "company_name":None, 
+                "positions":[]
+            }
+        ]
+        
+        self.assertListEqual(expected_users, users_json)
 
