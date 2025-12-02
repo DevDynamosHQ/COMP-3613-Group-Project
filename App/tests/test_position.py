@@ -110,3 +110,38 @@ class PositionControllerIntegrationTests(unittest.TestCase):
         assert stored_position.description == "Updated description"
         assert stored_position.number_of_positions == 3
         assert stored_position.status.value == "open"
+
+    
+    # Test to verify update position only accepts valid input
+    def test_update_position_with_invalid_input(self):
+        employer1 = self.create_test_employer1()
+
+        employer2 = self.create_test_employer2()
+        
+        position = open_position(employer1.id, "Developer", 2)
+        assert position is not None
+
+        # Non-existent position ID
+        result = update_position(9999, employer1.id, title="New Title")
+        assert result is False
+
+        # Correct position ID but wrong employer ID
+        result = update_position(position.id, employer2.id, title="New Title")
+        assert result is False
+
+        # Invalid status
+        result = update_position(position.id, employer1.id, status="invalid_status")
+        assert result is False
+
+        # Negative number of positions
+        result = update_position(position.id, employer1.id, number_of_positions=-1)
+        assert result is False
+
+        # Zero number of positions
+        result = update_position(position.id, employer1.id, number_of_positions=0)
+        assert result is False
+
+        # Empty title
+        result = update_position(position.id, employer1.id, title="")
+        assert result is False
+
