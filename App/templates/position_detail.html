@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ position.title }}{% endblock %}
+
+{% block content %}
+<h4>{{ position.title }}</h4>
+
+<p><strong>Company:</strong> {{ position.employer.company_name }}</p>
+<p><strong>Description:</strong> {{ position.description }}</p>
+<p><strong>Capacity:</strong> {{ position.number_of_positions }}</p>
+<p><strong>Status:</strong> {{ position.status.value }}</p>
+
+<a href="{{ url_for('student_views.student_dashboard') }}" class="btn-small grey">Back to Dashboard</a>
+{% endblock %}
