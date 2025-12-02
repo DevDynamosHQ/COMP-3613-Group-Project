@@ -10,7 +10,7 @@ from App.models import User, Student, Staff, Employer, Position, Application, Po
 
 from App.controllers.user import create_user
 from App.controllers.position import open_position, get_position
-from App.controllers.application import create_application, get_application, shortlist_application, accept_application, reject_application, delete_application
+from App.controllers.application import create_application, get_application, shortlist_application, accept_application, reject_application, delete_application, get_applications_by_student
 
 
 LOGGER = logging.getLogger(__name__)
@@ -270,6 +270,24 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Non-existent application ID
         result = delete_application(9999, student.id)
         assert result is None
+
+
+    # Test to verify the retrieval of student's applications
+    def test_get_applications_by_student(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+
+        position1 = self.create_test_position(employer, number_of_positions=2)
+        position2 = self.create_test_position(employer.id, "Data Analyst Intern", 2)
+    
+        application1 = create_application(student.id, position1.id)
+        application2 = create_application(student.id, position2.id)
+
+        student_applications = get_applications_by_student(student.id)
+    
+        assert any(application1.id == app.id for app in student_applications)
+        assert any(application2.id == app.id for app in student_applications)
 
     
     # Test that only students can apply
