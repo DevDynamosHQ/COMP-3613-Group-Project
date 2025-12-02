@@ -75,3 +75,25 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         assert application.student_id == student.id
         assert application.position_id == position.id
+
+    
+    # Test creating applications with invalid inputs
+    def test_create_application_invalid(self):
+        student = self.create_test_student()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        # Non-existent student
+        invalid_app = create_application(9999, position.id)
+        assert invalid_app is None
+
+        # Non-existent position
+        invalid_app = create_application(student.id, 9999)
+        assert invalid_app is None
+
+        # Position with no slots
+        position.number_of_positions = 0
+        db.session.commit()
+
+        invalid_app = create_application(student.id, position.id)
+        assert invalid_app is None
