@@ -195,3 +195,24 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         invalid_accept = accept_application(application.id, employer.id)
         assert invalid_accept is None
+
+    
+    # Test rejecting a valid application
+    def test_reject_application_valid(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        shortlisted = shortlist_application(application.id, staff.id)  
+        assert shortlisted is not None
+
+        rejected = reject_application(shortlisted.id, employer.id)
+        assert rejected is not None
+        assert rejected.state_name == "rejected"
+
+        stored_application = get_application(shortlisted.id)
+        assert stored_application.state_name == "rejected"
