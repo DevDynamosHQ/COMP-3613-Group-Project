@@ -15,17 +15,16 @@ position_views = Blueprint('position_views', __name__)
 @jwt_required()
 def view_position(position_id):
    
-    if current_user.role != 'student':
-        flash("Unauthorized access", "error")
-        return redirect(url_for("auth_views.login_page"))
-
-   
     position = get_position(position_id)
+
     if not position:
         flash("Position not found", "error")
         return redirect(url_for("student_views.student_dashboard"))
 
-    return render_template("position_detail.html", position=position)
+    return render_template(
+        "position_detail.html", 
+        position=position,
+        current_user=current_user)
 
 
 
