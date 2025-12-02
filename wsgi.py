@@ -72,11 +72,17 @@ def list_user_command(format):
         print(get_all_users_json())
 
 
+app.cli.add_command(user_cli) # add the group to the cli
+
+
+
+student_cli = AppGroup('student', help='Student object commands') 
+
 # Command: flask user view_open_positions
 # Example: flask user view_open_positions
 
 
-@user_cli.command("view_open_positions", help="Displays all positions")
+@student_cli.command("view_open_positions", help="Displays all positions")
 def view_positions_command():
     positions = get_all_open_positions()
 
@@ -93,11 +99,6 @@ def view_positions_command():
         print("No positions available")
         print("\n\n__________________________________________________________________________\n\n")
 
-
-app.cli.add_command(user_cli) # add the group to the cli
-
-
-student_cli = AppGroup('student', help='Student object commands') 
 
 
 # Command: flask student create_application <student_id> <position_id>
@@ -171,13 +172,12 @@ def list_applied_applications(position_id, state_name):
 
 
 # Command: flask staff shortlist_application <application_id> <staff_id>
-# Example: flask staff shortlist_application 1 1
-
+# Example: flask staff shortlist_application 1 5
 
 @staff_cli.command("shortlist_application", help="Adds a student to a shortlist")
 @click.argument("application_id", type=int)
 @click.argument("staff_id", type=int)
-def add_to_shortlist_command(application_id, staff_id):  # adjust import as needed
+def add_to_shortlist_command(application_id, staff_id):  
 
     result = shortlist_application(application_id, staff_id)
     
@@ -224,7 +224,7 @@ def view_positions_command(employer_id):
 
 
 # Command: flask employer add_position <employer_id> <title> <number_of_positions>
-# Example: flask employer add_position 3 Software Engineer 5
+# Example: flask employer add_position 3 "Software Engineer" 5
 
 
 @employer_cli.command("add_position", help="Adds a position")
@@ -240,7 +240,7 @@ def add_position_command(employer_id, title, number_of_positions):
 
 
 # Command: flask employer update_position <position_id> <employer_id> [--title] [--number_of_positions] [--status]
-# Example: flask employer update_position 2 3 --title "Senior Software Engineer" --number_of_positions 4 --status "closed"
+# Example: flask employer update_position 4 3 --title "Senior Software Engineer" --number_of_positions 4 --status "closed"
 
 
 @employer_cli.command("update_position", help="Updates a position")
@@ -259,7 +259,7 @@ def update_position_command(position_id, employer_id, title, number_of_positions
 
 
 # Command: flask employer list_shortlisted_applications <position_id> <state_name>
-# Example: flask employer list_shortlisted_applications 1 shortlisted
+# Example: flask employer list_shortlisted_applications 2 shortlisted
 
 
 @employer_cli.command("list_shortlisted_applications", help="Lists all shortlisted applications for a position")
@@ -278,7 +278,7 @@ def list_shortlisted_applications(position_id, state_name):
 
 
 # Command: flask employer accept_application <application_id> <employer_id>
-# Example: flask employer accept_application 1 3
+# Example: flask employer accept_application 2 3
 
 
 @employer_cli.command("accept_application", help="Accepts an application for a position")
@@ -298,7 +298,7 @@ def accept_application_command(application_id, employer_id=None):
 
 
 # Command: flask employer reject_application <application_id> <employer_id>
-# Example: flask employer reject_application 2 1
+# Example: flask employer reject_application 1 3
 
 
 @employer_cli.command("reject_application", help="Rejects an application for a position")
