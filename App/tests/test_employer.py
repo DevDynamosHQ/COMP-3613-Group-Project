@@ -53,3 +53,9 @@ class EmployerControllerIntegrationTests(unittest.TestCase):
 
         user_entry = get_user(employer.id)
         assert user_entry.username == "sam_new"
+
+
+    # Test that verify invalid employer id cannot be updated
+    def test_update_employer_with_invalid_id(self):
+        invalid_employer = update_employer(9999, username="sam_new", company_name="New Company", email="sam@example.com")
+        assert invalid_employer is False
