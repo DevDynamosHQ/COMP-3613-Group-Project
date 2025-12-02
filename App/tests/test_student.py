@@ -8,7 +8,7 @@ from App.database import db, create_db
 from App.models import User, Student
 
 from App.controllers.user import create_user, get_user
-from App.controllers.student import get_student, update_student
+from App.controllers.student import get_student, update_student, delete_student
 
 
 
@@ -102,3 +102,9 @@ class StudentControllerIntegrationTests(unittest.TestCase):
 
         user = get_user(student.id)
         assert user is None
+
+    
+    # Test that invalid student id cannot be deleted
+    def test_delete_student_with_invalid_id(self):
+        invalid_student = delete_student(9999) 
+        assert invalid_student is False
