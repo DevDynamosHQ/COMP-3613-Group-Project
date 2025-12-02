@@ -1,14 +1,39 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, flash, redirect, url_for, render_template
 from flask_jwt_extended import jwt_required, current_user
 #from App.controllers import (open_position, get_positions_by_employer, get_all_positions_json, get_positions_by_employer_json)
 
 from App.controllers.position import (
     open_position,
+    get_position,
     get_all_positions_json,
     get_positions_by_employer_json
 )
 
 position_views = Blueprint('position_views', __name__)
+
+@position_views.route('/student/position/<int:position_id>', methods=['GET'])
+@jwt_required()
+def view_position(position_id):
+   
+    if current_user.role != 'student':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+   
+    position = get_position(position_id)
+    if not position:
+        flash("Position not found", "error")
+        return redirect(url_for("student_views.student_dashboard"))
+
+    return render_template("position_detail.html", position=position)
+
+
+
+
+
+
+
+
 
 #get all positions
 @position_views.route('/api/positions/all', methods = ['GET'])
