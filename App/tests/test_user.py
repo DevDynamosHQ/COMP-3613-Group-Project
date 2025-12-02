@@ -7,7 +7,7 @@ from App.database import db, create_db
 
 from App.models import User, Student, Staff
 
-from App.controllers.user import create_user, get_user
+from App.controllers.user import create_user, get_user, get_user_by_username
 from App.controllers.student import get_student
 from App.controllers.staff import get_staff
 from App.controllers.employer import get_employer
@@ -65,3 +65,12 @@ class UserControllerIntegrationTests(unittest.TestCase):
         assert stored_employer is not None
         assert stored_employer.username == "sam"
         assert stored_employer.role == "employer"
+
+
+     # Test to verify users with invalid roles cannot be created
+    def test_create_user_invalid_role(self):
+        invalid_user = create_user("bob", "bobpass", "invalid_role")
+        assert invalid_user is False
+
+        user_lookup = get_user_by_username("bob")
+        assert user_lookup is None
