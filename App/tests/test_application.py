@@ -114,3 +114,34 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         stored_application = get_application(shortlisted.id)
         assert stored_application.id == application.id
+
+    
+    # Test shortlisting with invalid inputs
+    def test_shortlist_application_invalid(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        # Non-existent staff
+        invalid_shortlist = shortlist_application(application.id, 9999)
+        assert invalid_shortlist is None
+
+        # Non-existent application
+        invalid_shortlist = shortlist_application(9999, staff.id)
+        assert invalid_shortlist is None
+
+        # Both staff and application do not exist
+        invalid_shortlist = shortlist_application(9999, 9999)
+        assert invalid_shortlist is None
+
+        # Application already shortlisted 
+        shortlisted_once = shortlist_application(application.id, staff.id)
+        assert shortlisted_once is not None
+
+        # Duplicates prevented
+        duplicate_shortlist = shortlist_application(application.id, staff.id)
+        assert duplicate_shortlist is None  
