@@ -308,3 +308,25 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Employer cannot apply
         application3 = create_application(employer.id, position.id)
         assert application3 is None
+
+    
+    # Test that only staff can shortlist
+    def test_shortlist_role_permissions(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+
+        # Staff can shortlist
+        shortlist1 = shortlist_application(application.id, staff.id) 
+        assert shortlist1 is not None
+
+        # Student cannot shortlist
+        shortlist2 = shortlist_application(application.id, student.id) 
+        assert shortlist2 is None
+
+        # Employer cannot shortlist
+        shortlist3 = shortlist_application(application.id, employer.id) 
+        assert shortlist3 is None
