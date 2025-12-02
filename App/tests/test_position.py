@@ -8,7 +8,7 @@ from App.database import db, create_db
 from App.models import User, Student, Staff, Employer, Position
 
 from App.controllers.user import create_user
-from App.controllers.position import open_position, get_position
+from App.controllers.position import open_position, get_position, get_positions_by_employer
 
 
 
@@ -77,3 +77,18 @@ class PositionControllerIntegrationTests(unittest.TestCase):
 
         empty_title_position = open_position(employer.id, "", 2)
         assert empty_title_position is False
+
+    
+     # Test to verify all positions by employer
+    def test_get_positions_by_employer(self):
+        employer = self.create_test_employer1()
+
+        position1 = open_position(employer.id, "IT Support", 2)
+        position2 = open_position(employer.id, "Developer", 1)
+
+        assert position1 is not None
+        assert position2 is not None
+
+        positions = get_positions_by_employer(employer.id)
+        assert len(positions) == 2
+        assert all(p.employer_id == employer.id for p in positions)
