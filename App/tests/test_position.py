@@ -60,3 +60,20 @@ class PositionControllerIntegrationTests(unittest.TestCase):
         assert stored_position.title == "IT Support"
         assert stored_position.number_of_positions == position_count
         assert stored_position.description == description
+        
+    
+    # Test to verify inavlid positions are not created
+    def test_open_position_with_invalid_input(self):
+        employer = self.create_test_employer1()
+
+        invalid_employer_position = open_position(-1, "Developer", 1)
+        assert invalid_employer_position is False
+
+        negative_count_position = open_position(employer.id, "Developer", -1)
+        assert negative_count_position is False
+
+        zero_count_position = open_position(employer.id, "Developer", 0)
+        assert zero_count_position is False
+
+        empty_title_position = open_position(employer.id, "", 2)
+        assert empty_title_position is False
