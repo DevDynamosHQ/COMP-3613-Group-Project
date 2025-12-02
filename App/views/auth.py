@@ -13,7 +13,7 @@ from App.controllers.user import create_user
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
 
-
+#edited 
 @auth_views.route('/login', methods=['GET'])
 def login_page():
     return render_template('login.html')
