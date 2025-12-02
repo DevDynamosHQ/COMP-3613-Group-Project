@@ -8,7 +8,7 @@ from App.database import db, create_db
 from App.models import User, Student, Staff, Employer, Position
 
 from App.controllers.user import create_user
-from App.controllers.position import open_position, get_position, get_positions_by_employer, update_position
+from App.controllers.position import open_position, get_position, get_positions_by_employer, update_position, delete_position
 
 
 
@@ -145,3 +145,16 @@ class PositionControllerIntegrationTests(unittest.TestCase):
         result = update_position(position.id, employer1.id, title="")
         assert result is False
 
+
+    # Test to verify position was deleted
+    def test_delete_position(self):
+        employer = self.create_test_employer1()
+
+        position = open_position(employer.id, "Developer", 2)
+        assert position is not None
+    
+        deleted_result = delete_position(position.id, employer.id)
+        assert deleted_result is True
+
+        deleted_position = get_position(position.id)
+        assert deleted_position is None
