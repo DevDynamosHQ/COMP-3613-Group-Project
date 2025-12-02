@@ -10,7 +10,7 @@ from App.models import User, Student, Staff, Employer, Position, Application, Po
 
 from App.controllers.user import create_user
 from App.controllers.position import open_position, get_position
-from App.controllers.application import create_application, get_application, shortlist_application, accept_application
+from App.controllers.application import create_application, get_application, shortlist_application, accept_application, reject_application
 
 
 LOGGER = logging.getLogger(__name__)
@@ -216,3 +216,22 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         stored_application = get_application(shortlisted.id)
         assert stored_application.state_name == "rejected"
+
+    
+    # Test rejecting application with invalid inputs
+    def test_reject_application_invalid(self):
+        student = self.create_test_student()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+        application = create_application(student.id, position.id)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        # Non-existent application
+        result = reject_application(9999, employer.id)
+        assert result is None
+
+        # Non-existent employer
+        result = reject_application(application.id, 9999)
+        assert result is None
