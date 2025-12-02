@@ -170,4 +170,11 @@ class UserControllerIntegrationTests(unittest.TestCase):
         assert stored_user.username == "hannah_new"
         assert stored_user.check_password("newpass")
 
+    
+    # Test that invalid user id cannot be updated
+    def test_update_user_with_invalid_id(self):
+        invalid_user = update_user(9999, username="hannah", password="hannahpass")
+        assert invalid_user is None
+
+
 
