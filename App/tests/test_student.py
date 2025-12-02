@@ -68,3 +68,19 @@ class StudentControllerIntegrationTests(unittest.TestCase):
 
         user_entry = get_user(student.id)
         assert user_entry.username == "hannah_new"
+
+    
+    # Test that verify invalid student id cannot be updated
+    def test_update_student_with_invalid_id(self):
+        invalid_student = update_student(
+            student_id=9999,
+            username="hannah_new",
+            email="hannah@example.com",
+            dob=date(2000, 1, 1),
+            gender="female",
+            degree="Computer Science",
+            phone="123-456-7890",
+            gpa=3.8,
+            resume="Resume content here."
+        )
+        assert invalid_student is None
