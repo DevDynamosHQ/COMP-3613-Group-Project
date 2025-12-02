@@ -279,7 +279,7 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         employer = self.create_test_employer()
 
         position1 = self.create_test_position(employer, number_of_positions=2)
-        position2 = self.create_test_position(employer.id, "Data Analyst Intern", 2)
+        position2 = self.create_test_position(employer, "Data Analyst Intern", 2)
     
         application1 = create_application(student.id, position1.id)
         application2 = create_application(student.id, position2.id)
@@ -395,11 +395,11 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         assert application1 is not None
         stored1 = get_application(application1.id)
-        assert stored.state_name == "applied"
+        assert stored1.state_name == "applied"
 
         assert application2 is not None
         stored2 = get_application(application2.id)
-        assert stored.state_name == "applied"
+        assert stored2.state_name == "applied"
 
 
         # Staff shortlists
