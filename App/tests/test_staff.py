@@ -50,3 +50,9 @@ class StaffControllerIntegrationTests(unittest.TestCase):
 
         user_entry = get_user(staff.id)
         assert user_entry.username == "rick_new"
+
+    
+    # Test that verify invalid staff id cannot be updated
+    def test_update_staff_with_invalid_id(self):
+        invalid_staff = update_staff(9999, username="rick_new", email="rick@example.com")
+        assert invalid_staff is None
