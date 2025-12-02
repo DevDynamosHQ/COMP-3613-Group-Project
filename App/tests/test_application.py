@@ -1,0 +1,77 @@
+from datetime import date
+import os, tempfile, pytest, logging, unittest
+from werkzeug.security import check_password_hash, generate_password_hash
+
+
+from App.main import create_app
+from App.database import db, create_db
+
+from App.models import User, Student, Staff, Employer, Position, Application, PositionStatus
+
+from App.controllers.user import create_user
+from App.controllers.position import open_position
+from App.controllers.application import create_application, get_application
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+'''
+    Integration Tests
+'''
+
+# This fixture creates an empty database for the test and deletes it after the test
+# scope="class" would execute the fixture once and resued for all methods in the class
+@pytest.fixture(autouse=True, scope="function")
+def empty_db():
+    app = create_app({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///test.db'})
+    
+    with app.app_context():
+        create_db()
+        yield app.test_client()
+        db.drop_all()
+
+
+class ApplicationControllerIntegrationTests(unittest.TestCase):
+     
+    def create_test_student(self, username="hannah", password="hannahpass"):
+        student = create_user(username, password, "student")
+        assert student is not None
+        return student
+     
+
+    def create_test_employer(self, username="sam", password="sampass"):
+        employer = create_user(username, password, "employer")
+        assert employer is not None
+        return employer
+     
+    def create_test_staff(self, username="rick", password="rickpass"):
+        staff = create_user(username, password, "staff")
+        assert staff is not None
+        return staff
+
+
+    def create_test_position(self, employer, title="Developer", number_of_positions=1):
+        position = open_position(employer.id, title, number_of_positions)
+        assert position is not None
+        return position
+
+
+    # Test creating a valid application
+    def test_create_application_valid(self):
+        student = self.create_test_student()
+        employer = self.create_test_employer()
+
+        position = self.create_test_position(employer, title="Developer", number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        stored_application = get_application(application.id)
+        assert stored_application is not None
+
+        assert stored_application.student_id == student.id
+        assert stored_application.position_id == position.id
+
+        assert application.student_id == student.id
+        assert application.position_id == position.id
