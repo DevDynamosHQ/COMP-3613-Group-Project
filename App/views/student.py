@@ -10,7 +10,7 @@ from App.controllers.position import get_all_open_positions, get_position
 from App.controllers.user import get_user
 from App.controllers import get_student
 
-student_views = Blueprint('user_views', __name__, template_folder='../templates')
+student_views = Blueprint('student_views', __name__, template_folder='../templates')
 
 @student_views.route('/student/dashboard', methods=['GET', 'POST'])
 @jwt_required()
@@ -21,9 +21,11 @@ def student_dashboard():
         return redirect(url_for("auth_views.login_page"))
 
     student = get_student(current_user.id)
-
     positions = get_all_open_positions()
 
-    return render_template('student_dashboard.html', 
-                           student=student,
-                           positions=positions)
+    return render_template(
+        'student_dashboard.html', 
+        student=student,
+        positions=positions,
+        current_user=current_user,
+        is_authenticated=True)
