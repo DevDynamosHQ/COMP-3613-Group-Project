@@ -9,7 +9,7 @@ from App.database import db, create_db
 from App.models import User, Student, Staff, Employer
 
 from App.controllers.user import create_user, get_user
-from App.controllers.employer import get_employer, update_employer
+from App.controllers.employer import get_employer, update_employer, delete_employer
 
 
 LOGGER = logging.getLogger(__name__)
@@ -76,3 +76,9 @@ class EmployerControllerIntegrationTests(unittest.TestCase):
 
         user = get_user(employer.id)
         assert user is None
+
+
+    # Test that invalid employer id cannot be deleted
+    def test_delete_employer_with_invalid_id(self):
+        invalid_employer = delete_employer(9999) 
+        assert invalid_employer is None
