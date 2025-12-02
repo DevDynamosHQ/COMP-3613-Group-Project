@@ -84,3 +84,21 @@ class StudentControllerIntegrationTests(unittest.TestCase):
             resume="Resume content here."
         )
         assert invalid_student is None
+
+    
+    # Test to verify student was deleted from both Student and User tables
+    def test_delete_student(self):
+        student = self.create_test_student()
+        assert student is not None
+
+        stored_student = get_student(student.id)
+        assert stored_student is not None
+
+        deleted_result = delete_student(student.id)
+        assert deleted_result is True
+
+        deleted_student = get_student(student.id)
+        assert deleted_student is None
+
+        user = get_user(student.id)
+        assert user is None
