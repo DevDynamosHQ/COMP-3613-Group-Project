@@ -9,8 +9,8 @@ from App.database import db, create_db
 from App.models import User, Student, Staff, Employer, Position, Application, PositionStatus
 
 from App.controllers.user import create_user
-from App.controllers.position import open_position
-from App.controllers.application import create_application, get_application, shortlist_application
+from App.controllers.position import open_position, get_position
+from App.controllers.application import create_application, get_application, shortlist_application, accept_application
 
 
 LOGGER = logging.getLogger(__name__)
@@ -145,3 +145,27 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Duplicates prevented
         duplicate_shortlist = shortlist_application(application.id, staff.id)
         assert duplicate_shortlist is None  
+
+    
+    # Test accepting a valid application
+    def test_accept_application_valid(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        shortlisted = shortlist_application (application.id, staff.id)
+        assert shortlisted is not None
+
+        accepted = accept_application(application.id, employer.id)
+        assert accepted is not None
+        assert accepted.state_name == "accepted"
+
+        stored_position = get_position(position.id)
+        assert stored_position.number_of_positions == 1
+
+        stored_application = get_application(application.id)
+        assert stored_application.state_name == "accepted"
