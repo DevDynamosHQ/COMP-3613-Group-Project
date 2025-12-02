@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<div class="card-panel center-align" style="margin-top: 80px;">
+    <i class="material-icons large purple-text">exit_to_app</i>
+    <h4 class="purple-text">You have been logged out</h4>
+    <p>Thank you for using the Internship Platform.</p>
+
+    <a href="/" class="btn purple">Return Home</a>
+</div>
+
+<script>
+    setTimeout(() => {
+        window.location.href = "/";
+    }, 3000);
+</script>
+{% endblock %}
