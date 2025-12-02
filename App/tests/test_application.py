@@ -270,3 +270,23 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Non-existent application ID
         result = delete_application(9999, student.id)
         assert result is None
+
+    
+    # Test that only students can apply
+    def test_apply_role_permissions(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        # Student can apply
+        application1 = create_application(student.id, position.id)
+        assert application1 is not None
+
+        # Staff cannot apply
+        application2 = create_application(staff.id, position.id) 
+        assert application2 is None
+
+        # Employer cannot apply
+        application3 = create_application(employer.id, position.id)
+        assert application3 is None
