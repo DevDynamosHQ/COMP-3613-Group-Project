@@ -1,8 +1,23 @@
 from App.models import Position, Employer
 from App.database import db
 from App.models.position import PositionStatus
+from App.controllers.employer import get_employer
 
 def open_position(employer_id, title, number_of_positions, description=None):
+    employer = get_employer(employer_id)
+
+    if not employer:
+        print(f"Employer with ID {employer_id} does not exist.")
+        return False
+    
+    if not title or not title.strip():
+        print("Invalid title")
+        return False
+    
+    if not isinstance(number_of_positions, int) or number_of_positions <= 0:
+        print("Invalid number of positions")
+        return False
+    
     new_position = Position(title=title, number_of_positions=number_of_positions, employer_id=employer_id, description=description)
     db.session.add(new_position)
 
@@ -14,6 +29,7 @@ def open_position(employer_id, title, number_of_positions, description=None):
         db.session.rollback()
         print(f"Error creating position: {e}")
         return None
+    
 
 def get_position(position_id):
     return db.session.get(Position, position_id)
@@ -47,6 +63,15 @@ def update_position(position_id, employer_id, title=None, description=None, numb
         return False
     
     if employer_id is None or position.employer_id != employer_id:
+        print(f"Employer {employer_id} does not own position {position_id}.")
+        return False
+    
+    if title is not None and not title.strip():
+        print("Title cannot be empty.")
+        return False
+
+    if number_of_positions is not None and number_of_positions <= 0:
+        print("Invalid number of positions")
         return False
     
     if title is not None:
@@ -59,7 +84,11 @@ def update_position(position_id, employer_id, title=None, description=None, numb
         position.number_of_positions = number_of_positions
 
     if status is not None:
-        position.status = PositionStatus(status)
+        try: 
+            position.status = PositionStatus(status)
+        except ValueError:
+            print(f"Invalid status: {status}")
+            return False
 
     try:
         db.session.commit()
@@ -68,5 +97,26 @@ def update_position(position_id, employer_id, title=None, description=None, numb
     except Exception as e:
         db.session.rollback()
         print(f"Error updating position: {e}")
+        return False
+    
+
+def delete_position(position_id, employer_id):
+    position = get_position(position_id)
+
+    if not position:
+        return False
+
+    if position.employer_id != employer_id:
+        print(f"Employer {employer_id} does not own position {position.id}.")
+        return False
+
+    try:
+        db.session.delete(position)
+        db.session.commit()
+        return True
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting position: {e}")
         return False
     
