@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import db, create_db
-from App.models import User, Employer, Position, Shortlist, Staff, Student, PositionStatus
+from App.models import User, Employer, Position, Application, Staff, Student, PositionStatus
 from App.controllers import (
     create_user,
     get_all_users_json,
@@ -13,9 +13,9 @@ from App.controllers import (
     update_user,
     open_position,
     get_positions_by_employer,
-    add_student_to_shortlist,
-    get_shortlist_by_student,
-    decide_shortlist
+    #add_student_to_shortlist,
+    #get_shortlist_by_student,
+    #decide_shortlist
 )
 
 
@@ -184,7 +184,7 @@ LOGGER = logging.getLogger(__name__)
 #         shortlist = add_student_to_shortlist(student.id, position.id ,staff.id)
 #         shortlists = get_shortlist_by_student(student.id)
 #         assert any(shortlist.id == s.id for s in shortlists)
-        assert len(shortlists) > 0
+#        assert len(shortlists) > 0
 
     # Tests data changes in the database
     #def test_update_user(self):
