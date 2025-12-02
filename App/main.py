@@ -14,6 +14,7 @@ def register_blueprints(app):
     from App.views.user import user_views
     from App.views.index import index_views
     from App.views.auth import auth_views
+    from App.views.student import student_views
     from App.views.position import position_views
     from App.views.application import application_views
 
@@ -21,6 +22,7 @@ def register_blueprints(app):
     app.register_blueprint(user_views)
     app.register_blueprint(index_views)
     app.register_blueprint(auth_views)
+    app.register_blueprint(student_views)
     app.register_blueprint(position_views)
     app.register_blueprint(application_views)
 
