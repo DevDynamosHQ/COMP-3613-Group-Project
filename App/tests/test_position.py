@@ -158,3 +158,25 @@ class PositionControllerIntegrationTests(unittest.TestCase):
 
         deleted_position = get_position(position.id)
         assert deleted_position is None
+
+    
+     # Test to verify delete position only executed with correct input
+    def test_delete_position_with_invalid_input(self):
+        employer1 = self.create_test_employer1()
+
+        employer2 = self.create_test_employer2()
+
+        position = open_position(employer1.id, "Developer", 2)
+        assert position is not None
+
+        invalid_position_id = delete_position(9999, employer1.id)
+        assert invalid_position_id is False
+
+        wrong_employer = delete_position(position.id, employer2.id)
+        assert wrong_employer is False
+
+        deleted = delete_position(position.id, employer1.id)
+        assert deleted is True
+
+        already_deleted = delete_position(position.id, employer1.id)
+        assert already_deleted is False
