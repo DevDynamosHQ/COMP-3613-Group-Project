@@ -1,16 +1,28 @@
 from sqlalchemy import func
+from App.models import Application, Student, Position, Staff, User, Employer
+from App.controllers.student import get_student
 from App.controllers.employer import get_employer
 from App.controllers.staff import get_staff
-from App.models import Application, Student, Position, Staff, User, Employer
+from App.controllers.position import get_position
 from App.database import db
 
 
 def create_application(student_id, position_id):
-    student = db.session.get(Student, student_id)
-    position = db.session.get(Position, position_id)
+    student = get_student(student_id);
     
-    if not student or not position:
-        return None 
+    if not student: 
+        print("Student not found")
+        return None
+    
+    position = get_position(position_id)
+    
+    if not position: 
+        print("Position not found")
+        return None
+    
+    if position.number_of_positions <= 0:
+        print("No available slots for this position")
+        return None
     
     existing = db.session.query(Application).filter_by(student_id=student.id, position_id=position.id).first()
     
@@ -65,18 +77,21 @@ def get_applications_by_position_json(position_id):
     return [app.get_json() for app in get_applications_by_position(position_id)]
 
 
-def shortlist_application(application_id, staff_id=None):
+def shortlist_application(application_id, staff_id):
     application = get_application(application_id)
+
     if not application:
+        print("Application not found")
+        return None
+    
+    staff = get_staff(staff_id)
+    
+    if not staff:
+        print("Staff not found")
         return None
 
-    if staff_id:
-        staff_user = get_staff(staff_id)
-    else:
-        staff_user = None
-
     try:
-        application.shortlist(user=staff_user)  
+        application.shortlist(user=staff)  
         db.session.commit()
         return application
     
@@ -84,7 +99,6 @@ def shortlist_application(application_id, staff_id=None):
         db.session.rollback()
         print(f"Error shortlisting application: {e}")
         return None
-
 
 
 def accept_application(application_id, employer_id):
@@ -115,7 +129,7 @@ def accept_application(application_id, employer_id):
 
     try:
         application.accept(user=employer)
-        application.position.number_of_positions -= 1
+        application.position.number_of_positions = max(application.position.number_of_positions - 1, 0)
         db.session.commit()
         return application
     
@@ -125,17 +139,15 @@ def accept_application(application_id, employer_id):
         return None
 
 
-
-
 def reject_application(application_id, employer_id):
     application = get_application(application_id)
-    employer = get_employer(employer_id)
 
     if not application:
         print("Application not found")
         return None
 
-  
+    employer = get_employer(employer_id)
+
     if not employer:
         print("Employer not found")
         return None
@@ -152,12 +164,23 @@ def reject_application(application_id, employer_id):
         return None
 
 
-def delete_application(application_id):
+def delete_application(application_id, student_id):
     application = get_application(application_id)
     
     if not application:
+        print("Application not found")
         return None
-
-    db.session.delete(application)
-    db.session.commit()
-    return True
+    
+    if application.student_id != student_id:
+        print("Student cannot delete another student's application")
+        return None
+    
+    try: 
+        db.session.delete(application)
+        db.session.commit()
+        return True
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting application: {e}")
+        return False
