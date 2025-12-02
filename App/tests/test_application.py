@@ -10,7 +10,7 @@ from App.models import User, Student, Staff, Employer, Position, Application, Po
 
 from App.controllers.user import create_user
 from App.controllers.position import open_position
-from App.controllers.application import create_application, get_application
+from App.controllers.application import create_application, get_application, shortlist_application
 
 
 LOGGER = logging.getLogger(__name__)
@@ -97,3 +97,20 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
 
         invalid_app = create_application(student.id, position.id)
         assert invalid_app is None
+
+    
+    # Test shortlisting a valid application
+    def test_shortlist_application_valid(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        shortlisted = shortlist_application(application.id, staff.id)
+        assert shortlisted is not None
+
+        stored_application = get_application(shortlisted.id)
+        assert stored_application.id == application.id
