@@ -87,3 +87,27 @@ class UserControllerIntegrationTests(unittest.TestCase):
         stored = get_user_by_username("hannah")
         assert stored is not None
         assert stored.id == user1.id  
+
+    
+    # Test to verify create user would not accept invalid input
+    def test_create_user_invalid_inputs(self):
+        # Empty username
+        user_empty_username = create_user("", "pass123", "student")
+        assert user_empty_username is False
+
+        # No password
+        user_no_password = create_user("no_pass", "", "student")
+        assert user_no_password is False
+
+        # None as role
+        user_no_role = create_user("janet", "pass123", None)
+        assert user_no_role is False
+
+        # Spaces-only username
+        user_spaces = create_user("    ", "pass123", "student")
+        assert user_spaces is False
+
+        # Very long username
+        user_long = create_user("a" * 300, "pass123", "student")
+        assert user_long is False
+
