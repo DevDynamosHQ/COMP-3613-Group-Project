@@ -10,7 +10,7 @@ from App.models import User, Student, Staff, Employer, Position, Application, Po
 
 from App.controllers.user import create_user
 from App.controllers.position import open_position, get_position
-from App.controllers.application import create_application, get_application, shortlist_application, accept_application, reject_application
+from App.controllers.application import create_application, get_application, shortlist_application, accept_application, reject_application, delete_application
 
 
 LOGGER = logging.getLogger(__name__)
@@ -235,3 +235,19 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Non-existent employer
         result = reject_application(application.id, 9999)
         assert result is None
+
+
+    # Test deleting a valid application
+    def test_delete_application_valid(self):
+        student = self.create_test_student()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        assert application is not None
+
+        deleted = delete_application(application.id, student.id)
+        assert deleted is True  
+
+        stored_application = get_application(application.id)
+        assert stored_application is None
