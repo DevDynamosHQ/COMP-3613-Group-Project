@@ -8,7 +8,7 @@ from App.database import db, create_db
 from App.models import User, Student, Staff
 
 from App.controllers.user import create_user, get_user
-from App.controllers.staff import get_staff, update_staff
+from App.controllers.staff import get_staff, update_staff, delete_staff
 
 
 LOGGER = logging.getLogger(__name__)
@@ -56,3 +56,20 @@ class StaffControllerIntegrationTests(unittest.TestCase):
     def test_update_staff_with_invalid_id(self):
         invalid_staff = update_staff(9999, username="rick_new", email="rick@example.com")
         assert invalid_staff is None
+
+    
+    # Test to verify staff was deleted from both Staff and User tables
+    def test_delete_staff(self):
+        staff = self.create_test_staff()
+
+        stored_staff = get_staff(staff.id)
+        assert stored_staff is not None
+
+        deleted_result = delete_staff(staff.id)
+        assert deleted_result is True
+
+        deleted_staff = get_staff(staff.id)
+        assert deleted_staff is None
+
+        user = get_user(staff.id)
+        assert user is None
