@@ -8,7 +8,7 @@ from flask_jwt_extended import (
 )
 
 from App.controllers.auth import login
-from App.controllers.user import create_user
+from App.controllers.user import create_user, get_user_by_username
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
@@ -39,13 +39,23 @@ def login_action():
     data = request.form
     token = login(data.get('username'), data.get('password'))
 
-    #response = redirect(url_for('index_views.index'))
-    response = redirect(url_for('index_views.index_page')) 
+    
     if not token:
         flash("Invalid username or password", "error")
         return redirect(request.referrer)
 
     flash("Login Successful", "success")
+
+    user = get_user_by_username(data.get('username'))
+    if user.role == 'student':
+        response = redirect(url_for('student_views.student_dashboard'))
+    elif user.role == 'staff':
+        response = redirect(url_for('staff_views.staff_dashboard'))
+    elif user.role == 'employer':
+        response = redirect(url_for('employer_views.employer_dashboard'))
+    else:
+        response = redirect(url_for('index_views.index_page'))
+
     set_access_cookies(response, token)
     return response
 
