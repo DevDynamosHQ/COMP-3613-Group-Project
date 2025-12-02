@@ -7,7 +7,7 @@ from App.database import db, create_db
 
 from App.models import User, Student, Staff
 
-from App.controllers.user import create_user, get_user, get_user_by_username, get_all_users_json
+from App.controllers.user import create_user, get_user, get_user_by_username, get_all_users_json, update_user
 from App.controllers.student import get_student
 from App.controllers.staff import get_staff
 from App.controllers.employer import get_employer
@@ -155,4 +155,19 @@ class UserControllerIntegrationTests(unittest.TestCase):
         ]
         
         self.assertListEqual(expected_users, users_json)
+
+    
+    # Test to verify user information is updated 
+    def test_update_user(self):
+        user = create_user("hannah", "hannahpass", "student")
+        assert user is not None
+
+        updated_user = update_user(user.id, username="hannah_new", password="newpass")
+        assert updated_user is not None
+        assert updated_user.username == "hannah_new"
+
+        stored_user = get_user(user.id)
+        assert stored_user.username == "hannah_new"
+        assert stored_user.check_password("newpass")
+
 
