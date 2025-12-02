@@ -354,3 +354,27 @@ class ApplicationControllerIntegrationTests(unittest.TestCase):
         # Staff cannot accept
         accepted3 = accept_application(application.id, staff.id)
         assert accepted3 is None
+
+    
+    # Test that only employers can reject applications
+    def test_reject_role_permissions(self):
+        student = self.create_test_student()
+        staff = self.create_test_staff()
+        employer = self.create_test_employer()
+        position = self.create_test_position(employer, number_of_positions=2)
+
+        application = create_application(student.id, position.id)
+        shortlist_application(application.id, staff.id)
+
+        # Employer can reject
+        rejected1 = reject_application(application.id, employer.id)
+        assert rejected1 is not None
+        assert rejected1.state_name == "rejected"
+
+        # Student cannot reject
+        rejected2 = reject_application(application.id, student.id)
+        assert rejected2 is None
+        
+        # Staff cannot reject
+        rejected3 = reject_application(application.id, staff.id)
+        assert rejected3 is None
