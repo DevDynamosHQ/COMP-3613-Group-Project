@@ -15,15 +15,21 @@ def get_all_employers_json():
     return [e.get_json() for e in employers] if employers else []
 
 
-def update_employer(employer_id, company_name=None, email=None, phone=None):
+def update_employer(employer_id, username=None, company_name=None, email=None, phone=None):
     employer = get_employer(employer_id)
+
     if not employer:
         return False
     
+    if username is not None:
+        employer.username = username
+    
     if company_name is not None:
         employer.company_name = company_name
+
     if email is not None:
         employer.email = email
+
     if phone is not None:
         employer.phone = phone
     
@@ -42,6 +48,13 @@ def delete_employer(id):
     if not employer:
         return None
 
-    db.session.delete(employer)
-    db.session.commit()
-    return True
+    try: 
+        db.session.delete(employer)
+        db.session.commit()
+        return True
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting employer: {e}")
+        return False
+
