@@ -8,7 +8,7 @@ from App.database import db, create_db
 from App.models import User, Student, Staff, Employer, Position
 
 from App.controllers.user import create_user
-from App.controllers.position import open_position, get_position, get_positions_by_employer
+from App.controllers.position import open_position, get_position, get_positions_by_employer, update_position
 
 
 
@@ -92,3 +92,21 @@ class PositionControllerIntegrationTests(unittest.TestCase):
         positions = get_positions_by_employer(employer.id)
         assert len(positions) == 2
         assert all(p.employer_id == employer.id for p in positions)
+
+    
+    # Test to verify position is updated 
+    def test_update_position(self):
+        employer = self.create_test_employer1()
+
+        position = open_position(employer.id, "Developer", 2, "Initial description")
+        assert position is not None
+
+        updated_position = update_position(position.id, employer.id, title="Senior Developer", description="Updated description", number_of_positions=3, status="open")
+        assert updated_position is True
+
+        stored_position = get_position(position.id)
+
+        assert stored_position.title == "Senior Developer"
+        assert stored_position.description == "Updated description"
+        assert stored_position.number_of_positions == 3
+        assert stored_position.status.value == "open"
