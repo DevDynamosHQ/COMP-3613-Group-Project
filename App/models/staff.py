@@ -3,10 +3,10 @@ from App.models.user import User
 
 class Staff(User):
     __tablename__ = 'staff'
-
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    
     email = db.Column(db.String(256))
+    profile_pic = db.Column(db.String(255))
+
 
 
     __mapper_args__ = {
@@ -33,7 +33,8 @@ class Staff(User):
     def get_json(self):
         base_json = super().get_json()
         staff_json = {
-            "email": self.email
+            "email": self.email,
+            "profile_pic" : self.profile_pic
         }
         return {**base_json, **staff_json}
 
