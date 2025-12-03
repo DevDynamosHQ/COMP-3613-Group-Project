@@ -23,6 +23,11 @@
                         <i class="material-icons left">arrow_back</i>Back to Dashboard
                     </a>    
                     {% endif %}
+                    {% if current_user.role == 'employer' %}
+                    <a href="{{ url_for('employer_views.employer_dashboard') }}">
+                        <i class="material-icons left">arrow_back</i>Back to Dashboard
+                    </a>
+                    {% endif %}
                 </div>
 
                 <div class="card-content">

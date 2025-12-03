@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}Employer Dashboard{% endblock %}
+
+{% block content %}
+<div style="display: flex; height: 100vh; gap: 10px; padding: 10px;">
+
+    <div style="flex: 5; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <h5 style="margin: 0;">Positions</h5>
+            <form method="GET" action="{{ url_for('employer_views.employer_dashboard') }}" 
+                  style="display: flex; align-items: stretch; gap: 5px; margin: 0;">
+                <input type="text" name="q_positions" placeholder="Search..." 
+                       value="{{request.args.get('q_positions', '')}}" 
+                       style="height: 30px; font-size: 0.9rem; padding: 0 5px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
+            </form>
+        </div>
+
+        <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                {% if positions %}
+                    {% for pos in positions %}
+                        {% set show_card = true %}
+                        {% if request.args.get('q_positions') %}
+                            {% set search_term = request.args.get('q_positions').lower() %}
+                            {% if search_term not in pos.title.lower() %}
+                                {% set show_card = false %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% if show_card %}
+                            <div class="card hoverable" style="margin-bottom: 10px; padding: 5px;">
+                                <div class="card-content">
+                                    <span class="card-title">{{ pos.title }}</span>
+                                    <p><strong>Description:</strong> {{ pos.description }}</p>
+                                    <p><strong>Capacity:</strong> {{ pos.number_of_positions }}</p>
+                                    <p><strong>Status:</strong> {{ pos.status.value }}</p>
+                                </div>
+                                <div class="card-action">
+                                    <a href="{{url_for('employer_views.update_position', position_id=pos.id)}}" 
+                                       class="btn purple" style="width: 130px; text-align:center;">
+                                       Edit Position
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p>You have not created any internship positions.</p>
+                {% endif %}
+            </div>
+            <div style="margin-top: 15px; text-align: center;">
+                <a href="{{ url_for('employer_views.create_position') }}" class="btn green" style="width: 100%;"> #check this command 
+                    Create New Position
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div style="flex: 5; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <h5 style="margin: 0;">Shortlisted Applications</h5>
+            <form method="GET" action="{{ url_for('employer_views.employer_dashboard') }}" 
+                  style="display: flex; align-items: stretch; gap: 5px; margin: 0;">
+                <input type="hidden" name="selected_position" value="{{ selected_position }}">
+                <input type="text" name="q_applications" placeholder="Search..." 
+                       value="{{request.args.get('q_applications', '')}}" 
+                       style="height: 30px; font-size: 0.9rem; padding: 0 5px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
+            </form>
+        </div>
+
+        <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                {% if shortlisted %}
+                    {% for app in shortlisted %}
+                        {% set show_card = true %}
+                        {% if request.args.get('q_applications') %}
+                            {% set search_term = request.args.get('q_applications').lower() %}
+                            {% if search_term not in app.student_name.lower() %}
+                                {% set show_card = false %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% if show_card %}
+                            <div class="card hoverable" style="margin-bottom: 10px; padding: 5px;">
+                                <div class="card-content">
+                                    <span class="card-title">{{ app.student_name }}</span>
+                                    <p><strong>Status:</strong> {{ app.state_name }}</p>
+                                </div>
+                                <div class="card-action">
+                                    <a href="{{ url_for('employer_views.review_application', position_id = app.position.id, application_id=app.id) }}" 
+                                       class="btn purple" style="width: 130px; text-align:center;">
+                                       Review
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p>No shortlisted applicants found for this position.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
