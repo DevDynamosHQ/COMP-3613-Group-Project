@@ -7,7 +7,7 @@ from datetime import date
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_jwt_extended import jwt_required, current_user
 
-from App.controllers.application import get_applications_by_position_and_state
+from App.controllers.application import accept_application, get_application, get_applications_by_position_and_state, reject_application
 from App.controllers.student import get_student
 from App.models import User, Student, Staff, Employer, Position, Application, PositionStatus
 from App.controllers.employer import get_employer, update_employer
@@ -25,19 +25,16 @@ def employer_dashboard():
 
     employer = get_employer(current_user.id)
     positions = get_positions_by_employer(current_user.id)
-    
+
     selected_position_id = request.args.get("selected_position", type=int)
     shortlisted = []
 
+    q_positions = request.args.get("q_positions", "").lower()
+    if q_positions:
+        positions = [pos for pos in positions if q_positions in pos.title.lower()]
+
     if selected_position_id:
-        applications = get_applications_by_position_and_state(selected_position_id, "shortlisted")
-        for app in applications:
-            student = get_student(app.student_id)
-            student_name = student.username if student else "Unknown"
-            shortlisted.append({
-                "student_name": student_name,
-                "status": app.state_name
-            })
+        shortlisted = get_applications_by_position_and_state(selected_position_id, "shortlisted")
 
     return render_template(
         'employer_dashboard.html',
@@ -46,8 +43,11 @@ def employer_dashboard():
         shortlisted=shortlisted,
         selected_position=selected_position_id,
         current_user=current_user,
-        is_authenticated=True
+        is_authenticated=True,
+        q_positions=request.args.get("q_positions", "")
     )
+
+
 
 @employer_views.route('/employer/edit/<int:position_id>', methods=['GET', 'POST'])
 @jwt_required()
@@ -150,6 +150,70 @@ def create_position():
     return render_template("create_position.html", current_user=current_user)
 
 
+@employer_views.route('/employer/application/<int:position_id>/<int:application_id>')
+@jwt_required()
+def review_shortlist_application(position_id, application_id):
+    if current_user.role != 'employer':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+    application = get_application(application_id)
+    
+    if not application or application.position_id != position_id:
+        flash("Application not found", "error")
+        return redirect(url_for("employer_views.employer_dashboard"))
+
+    if application.position.employer_id != current_user.id:
+        flash("You are not authorized to view this application.", "error")
+        return redirect(url_for("employer_views.employer_dashboard"))
+
+    return render_template(
+        'review_shortlist_student.html',
+        application=application,
+        current_user=current_user
+    )
+
+# Accept a shortlisted student
+@employer_views.route('/employer/application/<int:application_id>/accept', methods=['POST'])
+@jwt_required()
+def accept_shortlist_application(application_id):
+    if current_user.role != 'employer':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+    application = get_application(application_id)
+    if not application:
+        flash("Application not found", "error")
+        return redirect(url_for("employer_views.employer_dashboard"))
+
+    try:
+        accept_application(application_id, current_user.id)
+        flash(f"{application.student.username} has been accepted.", "success")
+    except Exception as e:
+        flash(f"Failed to accept application: {str(e)}", "error")
+
+    return redirect(url_for("employer_views.employer_dashboard", selected_position=application.position_id))
+
+# Reject a shortlisted student
+@employer_views.route('/employer/application/<int:application_id>/reject', methods=['POST'])
+@jwt_required()
+def reject_shortlist_application(application_id):
+    if current_user.role != 'employer':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+    application = get_application(application_id)
+    if not application:
+        flash("Application not found", "error")
+        return redirect(url_for("employer_views.employer_dashboard"))
+
+    try:
+        reject_application(application_id, current_user.id)
+        flash(f"{application.student.username} has been rejected.", "success")
+    except Exception as e:
+        flash(f"Failed to reject application: {str(e)}", "error")
+
+    return redirect(url_for("employer_views.employer_dashboard", selected_position=application.position_id))
 
 @employer_views.route('/employer/profile', methods=['GET', 'POST'])
 @jwt_required()

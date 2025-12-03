@@ -1,4 +1,5 @@
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 from App.models import Application, Student, Position, Staff, User, Employer
 from App.controllers.student import get_student
 from App.controllers.employer import get_employer
@@ -8,7 +9,7 @@ from App.database import db
 
 
 def create_application(student_id, position_id):
-    student = get_student(student_id);
+    student = get_student(student_id)
     
     if not student: 
         print("Student not found")
@@ -58,12 +59,12 @@ def get_applications_by_position(position_id):
     return db.session.query(Application).filter_by(position_id=position_id).all()
 
 
+from sqlalchemy.orm import joinedload
+
 def get_applications_by_position_and_state(position_id, state_name):
-    applications = db.session.query(Application).filter(
+    applications = db.session.query(Application).options(joinedload(Application.student)).filter(
         Application.position_id == position_id,
-        func.lower(Application.state_name) == state_name.lower()
-    ).all()
-    
+        func.lower(Application.state_name) == state_name.lower()).all()
     return applications
 
 

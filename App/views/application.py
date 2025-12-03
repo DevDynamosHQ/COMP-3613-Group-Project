@@ -20,7 +20,7 @@ def get_application(application_id):
         return jsonify({'error': 'Application not found'}), 404
     return jsonify(application.to_dict()), 200
 
-
+'''
 @application_views.route('/applications', methods=['POST'])
 def create_application():
     data = request.json
@@ -94,7 +94,7 @@ def reject_application(application_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
 
-
+'''
 @application_views.route('/applications/<int:application_id>/shortlist', methods=['POST'])
 def shortlist_application(application_id):
     application = Application.query.get(application_id)

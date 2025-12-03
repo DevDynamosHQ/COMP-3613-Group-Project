@@ -12,14 +12,14 @@
     <div class="page-container">
         <div class="card-wrapper">
             <div class="card hoverable">
-                <!-- Top bar with back button -->
+                
                 <div class="top-bar">
                     <a href="{{ url_for('employer_views.employer_dashboard') }}">
                         <i class="material-icons left">arrow_back</i>Back to Dashboard
                     </a>
                 </div>
 
-                <!-- Form to create a new position -->
+                
                 <div class="card-content">
                     <h5>Create New Position</h5>
                     <form action="{{ url_for('employer_views.create_position') }}" method="POST">
