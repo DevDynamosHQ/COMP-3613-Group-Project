@@ -343,4 +343,5 @@ def user_tests_command(type):
     else:
         sys.exit(pytest.main(["-k", "test"]))
     
-app.cli.add_command(test) # add the group to the cli
+
+app.cli.add_command(test)
