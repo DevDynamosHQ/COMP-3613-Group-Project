@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Edit Position - {{ position.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-container">
+        <div class="card-wrapper">
+            <div class="card hoverable">
+                <div class="top-bar">
+                    <a href="{{ url_for('employer_views.employer_dashboard') }}">
+                        <i class="material-icons left">arrow_back</i>Back to Dashboard
+                    </a>
+                </div>
+
+                <div class="card-content">
+                    <h5>Edit Position: {{ position.title }}</h5>
+
+                    <form action="{{ url_for('employer_views.edit_position', position_id=position.id) }}" method="POST">
+                        <div class="input-field">
+                            <input id="title" name="title" type="text" value="{{ position.title }}" required>
+                            <label for="title" class="active">Title</label>
+                        </div>
+
+                        <div class="input-field">
+                            <textarea id="description" name="description" class="materialize-textarea" required>{{ position.description }}</textarea>
+                            <label for="description" class="active">Description</label>
+                        </div>
+
+                        <div class="input-field">
+                            <input id="number_of_positions" name="number_of_positions" type="number" value="{{ position.number_of_positions }}" min="1" required>
+                            <label for="number_of_positions" class="active">Capacity</label>
+                        </div>
+
+                        <div class="input-field">
+                            <select id="status" name="status" required>
+                                <option value="open" {% if position.status.value == 'open' %}selected{% endif %}>Open</option>
+                                <option value="closed" {% if position.status.value == 'closed' %}selected{% endif %}>Closed</option>
+                            </select>
+                            <label for="status">Status</label>
+                        </div>
+
+                        <button type="submit" class="btn purple">Save Changes</button>
+                        <a href="{{ url_for('employer_views.employer_dashboard') }}" class="btn grey">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Initialize Materialize select
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+    </script>
+</body>
+</html>

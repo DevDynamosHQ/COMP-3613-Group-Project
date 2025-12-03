@@ -49,43 +49,47 @@ def employer_dashboard():
         is_authenticated=True
     )
 
-
-'''
-@employer_views.route('/employer/edit/<int:position_id>', methods=['POST'])
+@employer_views.route('/employer/edit/<int:position_id>', methods=['GET', 'POST'])
 @jwt_required()
 def edit_position(position_id):
     if current_user.role != 'employer':
         flash("Unauthorized access", "error")
         return redirect(url_for("auth_views.login_page"))
 
-    employer = get_employer(current_user.id)
+    position = get_position(position_id)
+    if not position or position.employer_id != current_user.id:
+        flash("Position not found or unauthorized", "error")
+        return redirect(url_for('employer_views.employer_dashboard'))
 
-    title = request.form.get("title")
-    description = request.form.get("description")
-    number_of_positions = request.form.get("number_of_positions")
-    status = request.form.get("status")
+    if request.method == 'POST':
+        # Update the position
+        title = request.form.get("title")
+        description = request.form.get("description")
+        number_of_positions = request.form.get("number_of_positions")
+        status = request.form.get("status")
+        try:
+            number_of_positions = int(number_of_positions) if number_of_positions else None
+        except ValueError:
+            flash("Invalid number of positions.", "error")
+            return redirect(url_for("employer_views.employer_dashboard"))
 
-    try:
-        number_of_positions = int(number_of_positions) if number_of_positions else None
-    except ValueError:
-        flash("Invalid number of positions.", "error")
-        return redirect(url_for("employer_views.employer_dashboard"))
+        success = update_position(
+            position_id=position_id,
+            employer_id=current_user.id,
+            title=title,
+            description=description,
+            number_of_positions=number_of_positions,
+            status=status
+        )
+        if success:
+            flash("Position updated successfully!", "success")
+        else:
+            flash("Failed to update position.", "error")
+        return redirect(url_for('employer_views.employer_dashboard'))
 
-    success = update_position(
-        position_id=position_id,
-        employer_id=current_user.id,
-        title=title,
-        description=description,
-        number_of_positions=number_of_positions,
-        status=status
-    )
+    # GET request: render edit form
+    return render_template('edit_position.html', position=position)
 
-    if success:
-        flash("Position updated successfully!", "success")
-    else:
-        flash("Failed to update position. Check inputs or ownership.", "error")
-
-    return redirect(url_for("employer_views.employer_dashboard"))
 
 
 @employer_views.route('/employer/position/<int:position_id>', methods=['GET'])
@@ -102,7 +106,8 @@ def view_shortlisted_applications(position_id):
         position=position,
         current_user=current_user,
     )
-'''
+
+
 @employer_views.route('/employer/profile', methods=['GET', 'POST'])
 @jwt_required()
 def employer_profile():

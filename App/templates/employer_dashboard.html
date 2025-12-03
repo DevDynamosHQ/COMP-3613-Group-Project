@@ -5,20 +5,26 @@
 {% block content %}
 <div style="display: flex; height: 100vh; gap: 10px; padding: 10px;">
 
-    <!-- Left Panel: Positions -->
     <div style="flex: 5; display: flex; flex-direction: column;">
         <h5 style="margin-bottom: 10px;">Positions</h5>
         <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
             {% if positions %}
                 {% for pos in positions %}
                     <div class="card hoverable" 
-                         style="padding: 10px; cursor: pointer;"
+                         style="padding: 10px; cursor: pointer; position: relative;"
                          data-url="{{ url_for('employer_views.employer_dashboard', selected_position=pos.id) }}"
                          onclick="window.location=this.dataset.url">
                         <span class="card-title" style="font-weight: bold;">{{ pos.title }}</span>
                         <p><strong>Description:</strong> {{ pos.description }}</p>
                         <p><strong>Capacity:</strong> {{ pos.number_of_positions }}</p>
                         <p><strong>Status:</strong> {{ pos.status.value }}</p>
+
+                        <a href="{{ url_for('employer_views.edit_position', position_id=pos.id) }}" 
+                           class="btn btn-small purple"
+                           style="position: absolute; top: 10px; right: 10px;"
+                           onclick="event.stopPropagation();">
+                            Edit Position
+                        </a>
                     </div>
                 {% endfor %}
             {% else %}
@@ -27,7 +33,6 @@
         </div>
     </div>
 
-    <!-- Right Panel: Shortlisted Applicants -->
     <div style="flex: 5; display: flex; flex-direction: column;">
         <h5 style="margin-bottom: 10px;">Shortlisted Applications</h5>
         <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
