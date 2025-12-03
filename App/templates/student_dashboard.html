@@ -5,9 +5,7 @@
 {% block content %}
 <div style="display: flex; height: 100vh; gap: 10px; padding: 10px;">
 
-    
     <div style="flex: 5; display: flex; flex-direction: column;">
-       
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <h5 style="margin: 0;">Available Positions</h5>
             <form method="GET" action="{{ url_for('student_views.student_dashboard') }}" 
@@ -39,11 +37,18 @@
                                     <p><strong>Status:</strong> {{ pos.status.value }}</p>
                                 </div>
                                 <div class="card-action">
+                                    {% set profile_complete = student.email and student.dob and student.gender and student.degree and student.phone %}
+                                    
                                     {% if pos.id in applied_position_ids %}
                                         <a class="btn grey lighten-1 disabled" style="width: 130px; text-align:center;">Applied</a>
+                                    {% elif not profile_complete %}
+                                        <a href="{{ url_for('student_views.student_profile') }}" 
+                                           class="btn purple" style="width: 100%; text-align:center;">
+                                           Complete Profile
+                                        </a>
                                     {% else %}
                                         <a href="{{ url_for('student_views.view_position', position_id=pos.id) }}" 
-                                           class="btn purple" style="width: 130px; text-align:center;">Apply</a>
+                                           class="btn purple" style="width: 100%; text-align:center;">Apply for Position</a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -56,9 +61,7 @@
         </div>
     </div>
 
-   
     <div style="flex: 5; display: flex; flex-direction: column;">
-       
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <h5 style="margin: 0;">My Applications</h5>
             <form method="GET" action="{{ url_for('student_views.student_dashboard') }}" 
