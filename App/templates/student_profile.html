@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-container" style="padding: 20px;">
+
+        <div class="card hoverable">
+            <div class="top-bar" style="padding: 10px;">
+                <a href="{{ url_for('student_views.student_dashboard') }}">
+                    <i class="material-icons left">arrow_back</i>Back to Dashboard
+                </a>
+            </div>
+
+            <div class="card-content center">
+                {% if student.profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ student.profile_pic) }}" 
+                         alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default_profile.png') }}" 
+                         alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+
+                <h5 style="margin-top: 10px;">{{ student.full_name or student.username }}</h5>
+
+                <p><strong>Email:</strong> {{ student.email or 'N/A' }}</p>
+                <p><strong>Date of Birth:</strong> 
+                    {% if student.dob %}
+                        {{ student.dob.strftime('%Y-%m-%d') }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+
+                <p><strong>Age:</strong> {{ student_age or 'N/A' }}</p>
+                <p><strong>Gender:</strong> {{ student.gender or 'N/A' }}</p>
+                <p><strong>Degree:</strong> {{ student.degree or 'N/A' }}</p>
+                <p><strong>Phone:</strong> {{ student.phone or 'N/A' }}</p>
+                <p><strong>GPA:</strong> {{ student.gpa or 'N/A' }}</p>
+                {% if student.resume %}
+                    <p><strong>Resume:</strong> 
+                        <a href="{{ url_for('static', filename='uploads/' ~ student.resume) }}" target="_blank">
+                            Download Resume
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="card-action center">
+                <a class="btn purple modal-trigger" href="#edit-profile-modal">
+                    <i class="material-icons left">edit</i>Edit Profile
+                </a>
+            </div>
+        </div>
+
+      
+        <div id="edit-profile-modal" class="modal">
+            <div class="modal-content">
+                <h5>Edit Profile</h5>
+                <form action="{{ url_for('student_views.student_profile') }}" method="POST" enctype="multipart/form-data">
+                    <div class="file-field input-field">
+                        <div class="btn purple">
+                            <span>Profile Picture</span>
+                            <input type="file" name="profile_pic">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload profile picture">
+                        </div>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="email" name="email" id="email" value="{{ student.email }}" required>
+                        <label for="email" class="active">Email</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="date" name="dob" id="dob" value="{{ student.dob.strftime('%Y-%m-%d') if student.dob }}">
+                        <label for="dob" class="active">Date of Birth</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="gender">
+                            <option value="" disabled>Choose gender</option>
+                            <option value="male" {% if student.gender == 'male' %}selected{% endif %}>Male</option>
+                            <option value="female" {% if student.gender == 'female' %}selected{% endif %}>Female</option>
+                        </select>
+                        <label>Gender</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="text" name="degree" id="degree" value="{{ student.degree }}">
+                        <label for="degree" class="active">Degree</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="text" name="phone" id="phone" value="{{ student.phone }}">
+                        <label for="phone" class="active">Phone</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="number" step="0.01" name="gpa" id="gpa" value="{{ student.gpa }}">
+                        <label for="gpa" class="active">GPA</label>
+                    </div>
+
+                    <div class="file-field input-field">
+                        <div class="btn purple">
+                            <span>Resume</span>
+                            <input type="file" name="resume">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload your resume">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn green">
+                        <i class="material-icons left">save</i>Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var selects = document.querySelectorAll('select');
+            M.FormSelect.init(selects);
+
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+        });
+    </script>
+</body>
+</html>
