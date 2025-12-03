@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Employer Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-container" style="padding: 20px;">
+
+        <div class="card hoverable">
+            <div class="top-bar" style="padding: 10px;">
+                <a href="{{ url_for('employer_views.employer_dashboard') }}">
+                    <i class="material-icons left">arrow_back</i>Back to Dashboard
+                </a>
+            </div>
+
+            <div class="card-content center">
+                {% if employer.profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ employer.profile_pic) }}" 
+                         alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default_profile.png') }}" 
+                         alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+
+                <h5 style="margin-top: 10px;">{{ employer.company or employer.username }}</h5>
+
+                <p><strong>Email:</strong> {{ employer.email or 'N/A' }}</p>
+                <p><strong>Phone:</strong> {{ employer.phone or 'N/A' }}</p>
+                <p><strong>Company:</strong> {{ employer.company or 'N/A' }}</p>
+            </div>
+
+            <div class="card-action center">
+                <a class="btn purple modal-trigger" href="#edit-profile-modal">
+                    <i class="material-icons left">edit</i>Edit Profile
+                </a>
+            </div>
+        </div>
+
+        
+        <div id="edit-profile-modal" class="modal">
+            <div class="modal-content">
+                <h5>Edit Profile</h5>
+                <form action="{{ url_for('employer_views.employer_profile') }}" method="POST" enctype="multipart/form-data">
+
+                    <div class="file-field input-field">
+                        <div class="btn purple">
+                            <span>Profile Picture</span>
+                            <input type="file" name="profile_pic">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload profile picture">
+                        </div>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="email" name="email" id="email" value="{{ employer.email }}" required>
+                        <label for="email" class="active">Email</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="text" name="phone" id="phone" value="{{ employer.phone }}">
+                        <label for="phone" class="active">Phone Number</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="text" name="company" id="company" value="{{ employer.company }}" required>
+                        <label for="company" class="active">Company Name</label>
+                    </div>
+
+                    <button type="submit" class="btn green">
+                        <i class="material-icons left">save</i>Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+        });
+    </script>
+</body>
+</html>
