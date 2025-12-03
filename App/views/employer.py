@@ -29,6 +29,41 @@ def employer_dashboard():
     
     selected_position_id = request.args.get("selected_position", type=int)
     shortlisted = []
+
+    if selected_position_id:
+        applications = get_applications_by_position_and_state(selected_position_id, "shortlisted")
+        # Add student name to each application dictionary for the template
+        for app in applications:
+            student = app.student  # assuming Application has a relationship to Student
+            shortlisted.append({
+                "id": app.id,
+                "state_name": app.state_name,
+                "student_name": student.full_name if student else "Unknown"
+            })
+
+    return render_template(
+        'employer_dashboard.html',
+        employer=employer,
+        positions=positions,
+        shortlisted=shortlisted,
+        selected_position=selected_position_id,
+        current_user=current_user,
+        is_authenticated=True
+    )
+
+'''@employer_views.route('/employer/dashboard', methods=['GET'])
+@jwt_required()
+def employer_dashboard():
+
+    if current_user.role != 'employer':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+    employer = get_employer(current_user.id)
+    positions = get_positions_by_employer(current_user.id)
+    
+    selected_position_id = request.args.get("selected_position", type=int)
+    shortlisted = []
     if selected_position_id:
         shortlisted = get_applications_by_position_and_state(selected_position_id, "shortlisted")
 
@@ -42,7 +77,7 @@ def employer_dashboard():
         is_authenticated=True
     )
 
-'''@employer_views.route('/employer/edit/<int:position_id>', methods=['POST'])
+@employer_views.route('/employer/edit/<int:position_id>', methods=['POST'])
 @jwt_required()
 def edit_position(position_id):
     if current_user.role != 'employer':
