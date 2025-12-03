@@ -94,7 +94,7 @@ $ flask user create rob robpass student
 
 # List all users 
 ```bash
-$ flask list
+$ flask user list
 ```
 
 # ----------Student Commands----------
@@ -102,7 +102,7 @@ $ flask list
 # View open positions
 
 ```bash
-$ flask user view_open_positions
+$ flask student view_open_positions
 ```
 
 # Create application
@@ -260,13 +260,19 @@ $ flask test user
 ```
 
 # Command to run all tests
+```bash
 $ flask test user
+```
 
 # Command to run only unit tests
+```bash
 $ flask test user unit
+```
 
 # Command to run only integration tests
+```bash
 $ flask test user int
+```
 
 
 You can also supply "unit" or "int" at the end of the comand to execute only unit or integration tests.
