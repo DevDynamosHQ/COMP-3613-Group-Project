@@ -6,7 +6,6 @@ from .auth import auth_views
 #from .admin import setup_admin
 from .student import student_views
 from .position import position_views
-#from .shortlist import shortlist_views
 from .application import application_views
 '''
 def add_views(app):
