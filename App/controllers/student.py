@@ -16,7 +16,7 @@ def get_all_students_json():
     return [s.get_json() for s in students] if students else []
 
 
-def update_student(student_id, username=None, email=None, dob=None, gender=None, degree=None, phone=None, gpa=None, resume=None):
+def update_student(student_id, username=None, email=None, dob=None, gender=None, degree=None, phone=None, gpa=None, resume=None, profile_pic=None):
     student = get_student(student_id)
 
     if not student:
@@ -55,6 +55,9 @@ def update_student(student_id, username=None, email=None, dob=None, gender=None,
 
     if resume is not None:
         student.resume = resume
+
+    if profile_pic is not None:
+        student.profile_pic = profile_pic
 
     try:
         db.session.commit()
