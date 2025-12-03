@@ -35,6 +35,12 @@
                     <p><strong>Status:</strong> {{ application.state_name }}</p>
                     <p><strong>Date Created:</strong> {{ application.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
                     <p><strong>Last Updated:</strong> {{ application.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+                    {% if current_user.role == 'staff' %}
+                    <form action="{{ url_for('staff_views.shortlist_application_route', application_id = application.id) }}" method="POST">
+                        <button type="submit" class="btn-small purple">Shortlist Application</button>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
