@@ -64,12 +64,16 @@ You just need create a manager command function, for example:
 
 user_cli = AppGroup('user', help='User object commands')
 
-@user_cli.cli.command("create-user")
-@click.argument("username")
-@click.argument("password")
-def create_user_command(username, password):
-    create_user(username, password)
-    print(f'{username} created!')
+@user_cli.command("create", help="Creates a user")
+@click.argument("username", default="rob")
+@click.argument("password", default="robpass")
+@click.argument("role", default="student")
+def create_user_command(username, password, role):
+    result = create_user(username, password, role)
+    if result:
+        print(f'{username} created!')
+    else:
+        print("User creation failed")
 
 app.cli.add_command(user_cli) # add the group to the cli
 
@@ -77,11 +81,101 @@ app.cli.add_command(user_cli) # add the group to the cli
 
 Then execute the command invoking with flask cli with command name and the relevant parameters
 
+
+# ----------General Commands----------
+
+# Create a new user
 ```bash
-$ flask user create bob bobpass
+$ flask user create <username> <password> <role>
+$ flask user create rob robpass student
+```
+
+# List all users 
+```bash
+$ flask list
+```
+
+# ----------Student Commands----------
+
+# View open positions
+
+```bash
+$ flask user view_open_positions
+```
+
+# Create application
+
+```bash
+$ flask student create_application <student_id> <position_id>
+$ flask student create_application 1 3
+```
+
+# List student applications
+
+```bash
+$ flask student list_applications <student_id>
+$ flask student list_applications 1
+```
+
+# ----------Staff Commands----------
+
+# List all applications with applied status for a certain position
+
+```bash
+$ flask staff list_applied_applications <position_id> <state_name>
+$ flask staff list_applied_applications 1 applied
+```
+
+# Shortlist student application
+
+```bash
+$ flask staff shortlist_application <application_id> <staff_id>
+$ flask staff shortlist_application 1 5
 ```
 
 
+# ----------Employer Commands----------
+
+# List all positions created by employer
+
+```bash
+$ flask employer view_positions <employer_id>
+$ flask employer view_positions 3
+```
+
+# Create internship position
+
+```bash
+$ flask employer add_position <employer_id> <title> <number_of_positions>
+$ flask employer add_position 3 "Software Engineer" 5
+```
+
+# Update position
+
+```bash
+$ flask employer update_position <position_id> <employer_id> [--title] [--number_of_positions] [--status]
+$ flask employer update_position 4 3 --title "Senior Software Engineer" --number_of_positions 4 --status "closed"
+```
+
+# List all applications with shortlisted status for a certain position
+
+```bash
+$ flask employer list_shortlisted_applications <position_id> <state_name>
+$ flask employer list_shortlisted_applications 2 shortlisted
+```
+
+# Accept application
+
+```bash
+$ flask employer accept_application <application_id> <employer_id>
+$ flask employer accept_application 2 3
+```
+
+# Reject application
+```bash
+$ flask employer reject_application <application_id> <employer_id>
+$ flask employer reject_application 1 3
+```
 # Running the Project
 
 _For development run the serve command (what you execute):_
@@ -121,15 +215,18 @@ $ flask db --help
 Unit and Integration tests are created in the App/test. You can then create commands to run them. Look at the unit test command in wsgi.py for example
 
 ```python
+
+
 @test.command("user", help="Run User tests")
 @click.argument("type", default="all")
 def user_tests_command(type):
     if type == "unit":
-        sys.exit(pytest.main(["-k", "UserUnitTests"]))
+        sys.exit(pytest.main(["-k", "unit"]))
     elif type == "int":
-        sys.exit(pytest.main(["-k", "UserIntegrationTests"]))
+        sys.exit(pytest.main(["-k", "_integration"]))
     else:
-        sys.exit(pytest.main(["-k", "User"]))
+        sys.exit(pytest.main(["-k", "test"]))
+    
 ```
 
 You can then execute all user tests as follows
@@ -137,6 +234,16 @@ You can then execute all user tests as follows
 ```bash
 $ flask test user
 ```
+
+# Command to run all tests
+$ flask test user
+
+# Command to run only unit tests
+$ flask test user unit
+
+# Command to run only integration tests
+$ flask test user int
+
 
 You can also supply "unit" or "int" at the end of the comand to execute only unit or integration tests.
 
@@ -187,43 +294,3 @@ If you are running into errors in gitpod when updateding your github actions fil
 
 If you are adding models you may need to migrate the database with the commands given in the previous database migration section. Alternateively you can delete you database file.
 
-# Flask Commands for Assignment
-
-## flask user "username" "password" "type"
-    type: Which type of account. Choice between student, staff or employer
-    Creates a user account.
-
-## flask user add_position "title" "employer_id"
-    title: Title of position
-    employer_id: Id of employer
-
-    Creates an internship position for staff to shortlist on
-
-## flask user add_to_shortlist "student_id" "position_id" "staff_id"
-    student_id: Id of Student
-    position_id: Id of Position
-    staff_id: Id of Staff
-
-    Staff member add a student to a position's shortlist
-
-## flask user decide_shortlist "student_id" "position_id"
-    student_id: Id of Student
-    position_id: Id of Position
-
-    Employer either accepts or rejects a student from the shortlist
-
-## flask user get_shortlist "student_id"
-    student_id: Id of Student
-
-    Retrives the positions the selected student is shortlisted on
-
-## flask user get_shortlist_by_position "position_id"
-    position_id: Id of Position
-
-    Retrives the shortlist for a specific position
-
-## flask user get_position_by_employer "employer_id"
-    employer_id: Id of employer
-
-    Retrives the postiotns created from a given employer
-        
