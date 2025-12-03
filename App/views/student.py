@@ -9,7 +9,7 @@ from App.models import User, Student, Staff, Employer, Position, Application, Po
 from App.controllers.position import get_all_open_positions, get_position
 from App.controllers.user import get_user
 from App.controllers import get_student
-from App.controllers.application import create_application
+from App.controllers.application import create_application, get_applications_by_student, get_application
 
 student_views = Blueprint('student_views', __name__, template_folder='../templates')
 
@@ -23,13 +23,44 @@ def student_dashboard():
 
     student = get_student(current_user.id)
     positions = get_all_open_positions()
+    applications = get_applications_by_student(current_user.id)
+
+    applied_position_ids = {app.position_id for app in applications}
 
     return render_template(
         'student_dashboard.html', 
         student=student,
         positions=positions,
+        applications=applications,
+        applied_position_ids=applied_position_ids,
         current_user=current_user,
         is_authenticated=True)
+
+
+@student_views.route('/student/position/<int:position_id>', methods=['GET'])
+@jwt_required()
+def view_position(position_id):
+
+    position = get_position(position_id)
+
+    if not position:
+        flash("Position not found", "error")
+        return redirect(url_for("student_views.student_dashboard"))
+
+
+    existing_application = Application.query.filter_by(
+        student_id=current_user.id,
+        position_id=position_id
+    ).first()
+
+    already_applied = existing_application is not None
+
+    return render_template(
+        "position_detail.html",
+        position=position,
+        current_user=current_user,
+        already_applied=already_applied
+    )
 
 
 
@@ -40,11 +71,29 @@ def apply_internship(position_id):
         flash("Unauthorized access", "error")
         return redirect(url_for("auth_views.login_page"))
 
-    success = create_application(student_id=current_user.id, position_id=position_id)
+    application = create_application(student_id=current_user.id, position_id=position_id)
 
-    if success:
+    if application:
         flash("Application submitted successfully!", "success")
     else:
-        flash("Failed to apply — you may have already applied or the position is full.", "error")
+        flash("You already applied for this position or it is no longer available.", "error")
 
     return redirect(url_for("student_views.student_dashboard"))
+
+
+@student_views.route('/student/application/<int:application_id>')
+@jwt_required()
+def view_application(application_id):
+
+    if current_user.role != 'student':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+    application = get_application(application_id)
+    
+    if not application or application.student_id != current_user.id:
+        flash("Application not found", "error")
+        return redirect(url_for("student_views.student_dashboard"))
+
+    return render_template('view_application.html', application=application)
+
