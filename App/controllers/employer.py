@@ -15,7 +15,7 @@ def get_all_employers_json():
     return [e.get_json() for e in employers] if employers else []
 
 
-def update_employer(employer_id, username=None, company_name=None, email=None, phone=None):
+def update_employer(employer_id, username=None, company=None, email=None, phone=None, profile_pic=None):
     employer = get_employer(employer_id)
 
     if not employer:
@@ -24,14 +24,17 @@ def update_employer(employer_id, username=None, company_name=None, email=None, p
     if username is not None:
         employer.username = username
     
-    if company_name is not None:
-        employer.company_name = company_name
+    if company is not None:
+        employer.company = company  
 
     if email is not None:
         employer.email = email
 
     if phone is not None:
         employer.phone = phone
+
+    if profile_pic is not None:
+        employer.profile_pic = profile_pic
     
     try:
         db.session.commit()
