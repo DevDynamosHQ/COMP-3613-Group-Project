@@ -19,27 +19,24 @@ employer_views = Blueprint('employer_views', __name__, template_folder='../templ
 @employer_views.route('/employer/dashboard', methods=['GET'])
 @jwt_required()
 def employer_dashboard():
-
     if current_user.role != 'employer':
         flash("Unauthorized access", "error")
         return redirect(url_for("auth_views.login_page"))
 
     employer = get_employer(current_user.id)
     positions = get_positions_by_employer(current_user.id)
-
-    # Get selected position from query parameter
+    
     selected_position_id = request.args.get("selected_position", type=int)
     shortlisted = []
 
     if selected_position_id:
         applications = get_applications_by_position_and_state(selected_position_id, "shortlisted")
-        # Include student name for each shortlisted application
         for app in applications:
-            student = app.student  # assumes Application has a relationship to Student
+            student = get_student(app.student_id)
+            student_name = student.username if student else "Unknown"
             shortlisted.append({
-                "id": app.id,
-                "student_name": student.full_name if student else "Unknown",
-                "state_name": app.state_name
+                "student_name": student_name,
+                "state_name": app.state.value if hasattr(app.state, 'value') else app.state
             })
 
     return render_template(
@@ -51,6 +48,7 @@ def employer_dashboard():
         current_user=current_user,
         is_authenticated=True
     )
+
 
 '''
 @employer_views.route('/employer/edit/<int:position_id>', methods=['POST'])
