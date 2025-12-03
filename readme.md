@@ -87,6 +87,8 @@ Then execute the command invoking with flask cli with command name and the relev
 # Create a new user
 ```bash
 $ flask user create <username> <password> <role>
+```
+```bash
 $ flask user create rob robpass student
 ```
 
@@ -107,6 +109,8 @@ $ flask user view_open_positions
 
 ```bash
 $ flask student create_application <student_id> <position_id>
+```
+```bash
 $ flask student create_application 1 3
 ```
 
@@ -114,6 +118,8 @@ $ flask student create_application 1 3
 
 ```bash
 $ flask student list_applications <student_id>
+```
+```bash
 $ flask student list_applications 1
 ```
 
@@ -123,6 +129,8 @@ $ flask student list_applications 1
 
 ```bash
 $ flask staff list_applied_applications <position_id> <state_name>
+```
+```bash
 $ flask staff list_applied_applications 1 applied
 ```
 
@@ -130,6 +138,8 @@ $ flask staff list_applied_applications 1 applied
 
 ```bash
 $ flask staff shortlist_application <application_id> <staff_id>
+```
+```bash
 $ flask staff shortlist_application 1 5
 ```
 
@@ -140,6 +150,8 @@ $ flask staff shortlist_application 1 5
 
 ```bash
 $ flask employer view_positions <employer_id>
+```
+```bash
 $ flask employer view_positions 3
 ```
 
@@ -147,6 +159,8 @@ $ flask employer view_positions 3
 
 ```bash
 $ flask employer add_position <employer_id> <title> <number_of_positions>
+```
+```bash
 $ flask employer add_position 3 "Software Engineer" 5
 ```
 
@@ -154,6 +168,8 @@ $ flask employer add_position 3 "Software Engineer" 5
 
 ```bash
 $ flask employer update_position <position_id> <employer_id> [--title] [--number_of_positions] [--status]
+```
+```bash
 $ flask employer update_position 4 3 --title "Senior Software Engineer" --number_of_positions 4 --status "closed"
 ```
 
@@ -161,6 +177,8 @@ $ flask employer update_position 4 3 --title "Senior Software Engineer" --number
 
 ```bash
 $ flask employer list_shortlisted_applications <position_id> <state_name>
+```
+```bash
 $ flask employer list_shortlisted_applications 2 shortlisted
 ```
 
@@ -168,14 +186,20 @@ $ flask employer list_shortlisted_applications 2 shortlisted
 
 ```bash
 $ flask employer accept_application <application_id> <employer_id>
+```
+```bash
 $ flask employer accept_application 2 3
 ```
 
 # Reject application
+
 ```bash
 $ flask employer reject_application <application_id> <employer_id>
+```
+```bash
 $ flask employer reject_application 1 3
 ```
+
 # Running the Project
 
 _For development run the serve command (what you execute):_
@@ -281,9 +305,15 @@ from App.views import (
 
 # New views must be imported and added to this list
 views = [
-    user_views,
-    index_views
-]
+    user_views, 
+    index_views, 
+    auth_views, 
+    student_views, 
+    staff_views, 
+    employer_views, 
+    position_views, 
+    application_views
+] 
 ```
 
 ## Cannot Update Workflow file
