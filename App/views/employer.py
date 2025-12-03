@@ -16,7 +16,7 @@ from App.controllers.position import get_positions_by_employer, get_position, up
 
 employer_views = Blueprint('employer_views', __name__, template_folder='../templates')
 
-@employer_views.route('/employer/dashboard', methods=['GET', 'POST'])
+@employer_views.route('/employer/dashboard', methods=['GET'])
 @jwt_required()
 def employer_dashboard():
 
@@ -26,15 +26,31 @@ def employer_dashboard():
 
     employer = get_employer(current_user.id)
     positions = get_positions_by_employer(current_user.id)
-    shortlisted = [application for p in positions for application in get_applications_by_position_and_state(p.id, "shortlisted")]
+
+    # Get selected position from query parameter
+    selected_position_id = request.args.get("selected_position", type=int)
+    shortlisted = []
+
+    if selected_position_id:
+        applications = get_applications_by_position_and_state(selected_position_id, "shortlisted")
+        # Include student name for each shortlisted application
+        for app in applications:
+            student = app.student  # assumes Application has a relationship to Student
+            shortlisted.append({
+                "id": app.id,
+                "student_name": student.full_name if student else "Unknown",
+                "state_name": app.state_name
+            })
 
     return render_template(
         'employer_dashboard.html',
         employer=employer,
         positions=positions,
         shortlisted=shortlisted,
+        selected_position=selected_position_id,
         current_user=current_user,
-        is_authenticated=True)
+        is_authenticated=True
+    )
 
 '''
 @employer_views.route('/employer/edit/<int:position_id>', methods=['POST'])

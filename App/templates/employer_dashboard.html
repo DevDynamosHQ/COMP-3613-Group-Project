@@ -5,23 +5,20 @@
 {% block content %}
 <div style="display: flex; height: 100vh; gap: 10px; padding: 10px;">
 
+    <!-- Left Panel: Positions -->
     <div style="flex: 5; display: flex; flex-direction: column;">
         <h5 style="margin-bottom: 10px;">Positions</h5>
-
         <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
             {% if positions %}
                 {% for pos in positions %}
-                    <div class="card hoverable" style="padding: 5px;">
-                        <div class="card-content">
-                            <a href="{{ url_for('employer_views.employer_dashboard', selected_position=pos.id) }}" 
-                               style="text-decoration: none; color: inherit;">
-                                <span class="card-title">{{ pos.title }}</span>
-                            </a>
-                            <p><strong>Description:</strong> {{ pos.description }}</p>
-                            <p><strong>Capacity:</strong> {{ pos.number_of_positions }}</p>
-                            <p><strong>Status:</strong> {{ pos.status.value }}</p>
-                        </div>
-                        {# Interaction buttons removed #}
+                    <div class="card hoverable" 
+                         style="padding: 10px; cursor: pointer;"
+                         data-url="{{ url_for('employer_views.employer_dashboard', selected_position=pos.id) }}"
+                         onclick="window.location=this.dataset.url">
+                        <span class="card-title" style="font-weight: bold;">{{ pos.title }}</span>
+                        <p><strong>Description:</strong> {{ pos.description }}</p>
+                        <p><strong>Capacity:</strong> {{ pos.number_of_positions }}</p>
+                        <p><strong>Status:</strong> {{ pos.status.value }}</p>
                     </div>
                 {% endfor %}
             {% else %}
@@ -33,18 +30,15 @@
     <!-- Right Panel: Shortlisted Applicants -->
     <div style="flex: 5; display: flex; flex-direction: column;">
         <h5 style="margin-bottom: 10px;">Shortlisted Applications</h5>
-
         <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
             {% if selected_position %}
                 {% if shortlisted %}
                     {% for app in shortlisted %}
                         <div class="card hoverable" style="padding: 5px;">
                             <div class="card-content">
-                                <span class="card-title">{{ app.student_name }}</span>
-                                <p>Name: {{ app.student_name }}</p>
+                                <span class="card-title" style="font-weight: bold;">{{ app.student_name }}</span>
                                 <p>Status: {{ app.state_name }}</p>
                             </div>
-                            {# Interaction buttons removed #}
                         </div>
                     {% endfor %}
                 {% else %}
@@ -55,6 +49,6 @@
             {% endif %}
         </div>
     </div>
-    
+
 </div>
 {% endblock %}
