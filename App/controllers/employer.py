@@ -15,7 +15,7 @@ def get_all_employers_json():
     return [e.get_json() for e in employers] if employers else []
 
 
-def update_employer(employer_id, username=None, company=None, email=None, phone=None, profile_pic=None):
+def update_employer(employer_id, username=None, company_name=None, email=None, phone=None, profile_pic=None):
     employer = get_employer(employer_id)
 
     if not employer:
@@ -24,8 +24,8 @@ def update_employer(employer_id, username=None, company=None, email=None, phone=
     if username is not None:
         employer.username = username
     
-    if company is not None:
-        employer.company = company  
+    if company_name is not None:
+        employer.company_name = company_name
 
     if email is not None:
         employer.email = email

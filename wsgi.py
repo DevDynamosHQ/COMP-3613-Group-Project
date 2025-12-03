@@ -321,11 +321,15 @@ app.cli.add_command(employer_cli) # add the group to the cli
 
 
 
+# Command to run all tests
+# flask test user
 
+# Command to run only unit tests
+# flask test user unit
 
-'''
-Test Commands
-'''
+# Command to run only integration tests
+# flask test user int
+
 
 test = AppGroup('test', help='Testing commands') 
 
@@ -333,12 +337,10 @@ test = AppGroup('test', help='Testing commands')
 @click.argument("type", default="all")
 def user_tests_command(type):
     if type == "unit":
-        sys.exit(pytest.main(["-k", "UserUnitTests"]))
+        sys.exit(pytest.main(["-k", "unit"]))
     elif type == "int":
-        sys.exit(pytest.main(["-k", "UserIntegrationTests"]))
+        sys.exit(pytest.main(["-k", "_integration"]))
     else:
-        sys.exit(pytest.main(["-k", "App"]))
+        sys.exit(pytest.main(["-k", "test"]))
     
-
-app.cli.add_command(test)
-
+app.cli.add_command(test) # add the group to the cli
