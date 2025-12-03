@@ -13,9 +13,16 @@
         <div class="card-wrapper">
             <div class="card hoverable">
                 <div class="top-bar">
+                    {% if current_user.role == 'student' %}
                     <a href="{{ url_for('student_views.student_dashboard') }}">
                         <i class="material-icons left">arrow_back</i>Back to Dashboard
                     </a>
+                    {% endif %}
+                    {% if current_user.role == 'staff' %}
+                    <a href="{{ url_for('staff_views.staff_dashboard') }}">
+                        <i class="material-icons left">arrow_back</i>Back to Dashboard
+                    </a>    
+                    {% endif %}
                 </div>
 
                 <div class="card-content">
