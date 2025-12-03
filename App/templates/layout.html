@@ -33,15 +33,16 @@
                     
 
                     {% if current_user.role == 'student' %}
-                        <li><a href="/student/dashboard">Student Dashboard</a></li>
+                        <li><a href="{{ url_for('student_views.student_dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('student_views.student_profile') }}">Profile</a></li>
                     {% elif current_user.role == 'staff' %}
-                        <li><a href="/staff/dashboard">Staff Dashboard</a></li>
+                        <li><a href="/staff/dashboard">Dashboard</a></li>
+                        <li><a href="/staff/profile">Profile</a></li>
                     {% elif current_user.role == 'employer' %}
-                        <li><a href="/employer/dashboard">Employer Dashboard</a></li>
+                        <li><a href="/employer/dashboard">Dashboard</a></li>
+                        <li><a href="/employer/profile">Profile</a></li>
                     {% endif %}
-
-                    <li><a href="/identify">Profile</a></li>
-                    <li><a href="/logout">Logout</a></li>
+                        <li><a href="/logout">Logout</a></li>
 
                 {% else %}
                     <li><a href="/login">Login</a></li>
