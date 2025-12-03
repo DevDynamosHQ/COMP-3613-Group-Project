@@ -78,8 +78,8 @@ app.cli.add_command(user_cli) # add the group to the cli
 
 student_cli = AppGroup('student', help='Student object commands') 
 
-# Command: flask user view_open_positions
-# Example: flask user view_open_positions
+# Command: flask student view_open_positions
+# Example: flask student view_open_positions
 
 
 @student_cli.command("view_open_positions", help="Displays all positions")
