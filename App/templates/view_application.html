@@ -13,15 +13,24 @@
         <div class="card-wrapper">
             <div class="card hoverable">
                 <div class="top-bar">
+                    {% if current_user.role == 'student' %}
                     <a href="{{ url_for('student_views.student_dashboard') }}">
                         <i class="material-icons left">arrow_back</i>Back to Dashboard
                     </a>
+                    {% endif %}
+                    {% if current_user.role == 'staff' %}
+                    <a href="{{ url_for('staff_views.staff_dashboard') }}">
+                        <i class="material-icons left">arrow_back</i>Back to Dashboard
+                    </a>    
+                    {% endif %}
                 </div>
 
                 <div class="card-content">
                     <h5>{{ application.position.title }}</h5>
                     <p><strong>Application ID:</strong> {{ application.id }}</p>
                     <p><strong>Position:</strong> {{ application.position.title }}</p>
+                    <p><strong>Applicant:</strong> {{ application.student.username }}</p>
+                    <p><strong>Degree:</strong>{{application.student.degree}}</p>
                     <p><strong>Shortlisting Staff:</strong> {% if application.staff %}{{ application.staff.username }}{% else %}N/A{% endif %}</p>
                     <p><strong>Status:</strong> {{ application.state_name }}</p>
                     <p><strong>Date Created:</strong> {{ application.created_at.strftime('%Y-%m-%d %H:%M') }}</p>

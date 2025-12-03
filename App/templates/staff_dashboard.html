@@ -37,7 +37,7 @@
                                     <p><strong>Status:</strong> {{ pos.status.value }}</p>
                                 </div>
                                 <div class="card-action">
-                                    <a href="{{url_for('staff_views.view_position_applications', position_id=pos.id)}}" 
+                                    <a href="{{url_for('staff_views.view_position', position_id=pos.id)}}" 
                                        class="btn purple" style="width: 130px; text-align:center;">
                                        View Applications
                                     </a>
@@ -63,7 +63,38 @@
             </form>
         </div>
 
-        
+        <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                {% if applications %}
+                    {% for app in applications %}
+                        {% set show_card = true %}
+                        {% if request.args.get('q_applications') %}
+                            {% set search_term = request.args.get('q_applications').lower() %}
+                            {% if search_term not in app.position.title.lower() %}
+                                {% set show_card = false %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% if show_card %}
+                            <div class="card hoverable" style="margin-bottom: 10px; padding: 5px;">
+                                <div class="card-content">
+                                    <span class="card-title">{{ app.position.title }}</span>
+                                    <p><strong>Status:</strong> {{ app.state_name }}</p>
+                                </div>
+                                <div class="card-action">
+                                    <a href="{{ url_for('staff_views.view_application', position_id = app.position.id, application_id=app.id) }}" 
+                                       class="btn purple" style="width: 130px; text-align:center;">
+                                       Review
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p>There have not been any applications for this position</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
 </div>
