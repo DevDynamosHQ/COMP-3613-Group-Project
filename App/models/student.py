@@ -15,6 +15,7 @@ class Student(User):
     phone = db.Column(db.String(256))
     gpa = db.Column(db.Float)
     resume = db.Column(db.String(256))
+    profile_pic = db.Column(db.String(255))
 
 
     __mapper_args__ = {
@@ -56,7 +57,8 @@ class Student(User):
             'gender': self.gender,
             'gpa': self.gpa,
             'resume': self.resume,
-            'age': self.calculate_age()
+            'age': self.calculate_age(),
+            'profile_pic': self.profile_pic
         }
         return {**base_json, **student_json}
     
