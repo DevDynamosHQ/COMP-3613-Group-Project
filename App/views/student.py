@@ -74,6 +74,15 @@ def apply_internship(position_id):
         flash("Unauthorized access", "error")
         return redirect(url_for("auth_views.login_page"))
 
+    student = get_student(current_user.id)
+
+   
+    required_fields = [student.email, student.dob, student.gender, student.degree, student.phone]
+    if not all(required_fields):
+        flash("Please complete your profile before applying for internships.", "warning")
+        return redirect(url_for("student_views.student_profile"))
+
+   
     application = create_application(student_id=current_user.id, position_id=position_id)
 
     if application:
@@ -82,6 +91,7 @@ def apply_internship(position_id):
         flash("You already applied for this position or it is no longer available.", "error")
 
     return redirect(url_for("student_views.student_dashboard"))
+
 
 
 @student_views.route('/student/application/<int:application_id>')
