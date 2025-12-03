@@ -40,9 +40,8 @@
                     {% for app in shortlisted %}
                         <div class="card hoverable" style="padding: 5px;">
                             <div class="card-content">
-                                <!-- Student name as card title -->
                                 <span class="card-title">{{ app.student_name }}</span>
-                                <!-- Status below -->
+                                <p>Name: {{ app.student_name }}</p>
                                 <p>Status: {{ app.state_name }}</p>
                             </div>
                             {# Interaction buttons removed #}
