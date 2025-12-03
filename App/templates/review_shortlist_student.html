@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Review {{ application.student.username }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+<div class="page-container">
+    <div class="card-wrapper">
+        <div class="card hoverable">
+            <div class="top-bar">
+                <a href="{{ url_for('employer_views.employer_dashboard', selected_position=application.position_id) }}">
+                    <i class="material-icons left">arrow_back</i>Back to Dashboard
+                </a>
+            </div>
+
+            <div class="card-content">
+                <h5>{{ application.student.username }}</h5>
+                <p><strong>Application ID:</strong> {{ application.id }}</p>
+                <p><strong>Position:</strong> {{ application.position.title }}</p>
+                <p><strong>Applicant:</strong> {{ application.student.username }}</p>
+                <p><strong>Degree:</strong> {{ application.student.degree }}</p>
+                <p><strong>Shortlisting Staff:</strong> {% if application.staff %}{{ application.staff.username }}{% else %}N/A{% endif %}</p>
+                <p><strong>Status:</strong> {{ application.state_name|capitalize }}</p>
+                <p><strong>Date Created:</strong> {{ application.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Last Updated:</strong> {{ application.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+                <form method="POST" action="{{ url_for('employer_views.accept_shortlist_application', application_id=application.id) }}" style="display:inline-block;">
+                    <button type="submit" class="btn green">Accept</button>
+                </form>
+                <form method="POST" action="{{ url_for('employer_views.reject_shortlist_application', application_id=application.id) }}" style="display:inline-block;">
+                    <button type="submit" class="btn red">Reject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
