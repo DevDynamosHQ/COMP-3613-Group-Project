@@ -67,6 +67,27 @@ def view_application(position_id, application_id):
 
     return render_template('view_application.html', application=application, current_user=current_user)
 
+@staff_views.route('/staff/application/<int:application_id>/shortlist', methods=['POST'])
+@jwt_required()
+def shortlist_application_route(application_id):
+    if current_user.role != 'staff':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+        
+    application = get_application(application_id)
+    if not application:
+        flash("Application not found", "error")
+        return redirect(url_for("staff_views.staff_dashboard"))
+    
+    success = shortlist_application(application_id, current_user.id)
+    if success:
+        flash("Application shortlisted successfully", "success")
+    else:
+        flash("Error shortlisting application", "danger")
+
+    return redirect(url_for("staff_views.staff_dashboard"))
+
+
 @staff_views.route('/staff/profile', methods=['GET', 'POST'])
 @jwt_required()
 def staff_profile():
