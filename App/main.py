@@ -17,6 +17,7 @@ def register_blueprints(app):
     from App.views.student import student_views
     from App.views.position import position_views
     from App.views.application import application_views
+    from App.views.employer import employer_views
 
 
     app.register_blueprint(user_views)
@@ -25,7 +26,7 @@ def register_blueprints(app):
     app.register_blueprint(student_views)
     app.register_blueprint(position_views)
     app.register_blueprint(application_views)
-
+    app.register_blueprint(employer_views)
 
 def create_app(overrides={}):
     app = Flask(__name__, static_url_path='/static')

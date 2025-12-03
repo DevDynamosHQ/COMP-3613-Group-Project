@@ -52,7 +52,7 @@ def login_action():
     elif user.role == 'staff':
         response = redirect(url_for('staff_views.staff_dashboard'))
     elif user.role == 'employer':
-        response = redirect(url_for('employer_views.employer_dashboard'))
+        response = redirect(url_for('employer_views.employer_profile')) #change back to employer_dashboard
     else:
         response = redirect(url_for('index_views.index_page'))
 
