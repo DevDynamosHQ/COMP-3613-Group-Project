@@ -10,6 +10,7 @@ class Employer(User):
     company_name = db.Column(db.String(256))
     email = db.Column(db.String(256))
     phone = db.Column(db.String(256))
+    profile_pic = db.Column(db.String(255))
 
     positions = db.relationship("Position", back_populates="employer")
    
@@ -41,7 +42,8 @@ class Employer(User):
             "company_name": self.company_name,
             "email": self.email,
             "phone": self.phone,
-            "positions": [p.get_json() for p in self.positions]
+            "positions": [p.get_json() for p in self.positions],
+            "profile_pic": self.profile_pic
         }
         return {**base_json, **employer_json}
 
