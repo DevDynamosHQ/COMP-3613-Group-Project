@@ -15,7 +15,7 @@ def get_all_staff_json():
     return [s.get_json() for s in staff] if staff else []
 
 
-def update_staff(staff_id, username=None, email=None):
+def update_staff(staff_id, username=None, email=None, profile_pic=None):
     staff = get_staff(staff_id)
 
     if not staff:
@@ -26,6 +26,9 @@ def update_staff(staff_id, username=None, email=None):
 
     if email is not None:
         staff.email = email
+
+    if profile_pic is not None:
+        staff.profile_pic = profile_pic
 
     try:
         db.session.commit()
