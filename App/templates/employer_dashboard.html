@@ -8,12 +8,15 @@
     <div style="flex: 5; display: flex; flex-direction: column;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <h5 style="margin: 0;">Positions</h5>
+            {# Search form commented out #}
+            {# 
             <form method="GET" action="{{ url_for('employer_views.employer_dashboard') }}" 
                   style="display: flex; align-items: stretch; gap: 5px; margin: 0;">
                 <input type="text" name="q_positions" placeholder="Search..." 
                        value="{{request.args.get('q_positions', '')}}" 
                        style="height: 30px; font-size: 0.9rem; padding: 0 5px; border: 1px solid #ccc; border-radius: 4px; flex: 1;">
             </form>
+            #}
         </div>
 
         <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column;">
@@ -36,12 +39,15 @@
                                     <p><strong>Capacity:</strong> {{ pos.number_of_positions }}</p>
                                     <p><strong>Status:</strong> {{ pos.status.value }}</p>
                                 </div>
+                                {# Card actions commented out #}
+                                {#
                                 <div class="card-action">
                                     <a href="{{url_for('employer_views.update_position', position_id=pos.id)}}" 
                                        class="btn purple" style="width: 130px; text-align:center;">
                                        Edit Position
                                     </a>
                                 </div>
+                                #}
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -49,14 +55,19 @@
                     <p>You have not created any internship positions.</p>
                 {% endif %}
             </div>
+            {# Create New Position button commented out #}
+            {#
             <div style="margin-top: 15px; text-align: center;">
-                <a href="{{ url_for('employer_views.create_position') }}" class="btn green" style="width: 100%;"> #check this command 
+                <a href="{{ url_for('employer_views.create_position') }}" class="btn green" style="width: 100%;">
                     Create New Position
                 </a>
             </div>
+            #}
         </div>
     </div>
 
+    {# Right panel for shortlisted applications commented out entirely #}
+    {#
     <div style="flex: 5; display: flex; flex-direction: column;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <h5 style="margin: 0;">Shortlisted Applications</h5>
@@ -102,6 +113,7 @@
             </div>
         </div>
     </div>
+    #}
 
 </div>
 {% endblock %}
