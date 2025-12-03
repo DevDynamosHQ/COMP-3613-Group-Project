@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Create New Position</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-container">
+        <div class="card-wrapper">
+            <div class="card hoverable">
+                <!-- Top bar with back button -->
+                <div class="top-bar">
+                    <a href="{{ url_for('employer_views.employer_dashboard') }}">
+                        <i class="material-icons left">arrow_back</i>Back to Dashboard
+                    </a>
+                </div>
+
+                <!-- Form to create a new position -->
+                <div class="card-content">
+                    <h5>Create New Position</h5>
+                    <form action="{{ url_for('employer_views.create_position') }}" method="POST">
+                        <div class="input-field">
+                            <input id="title" name="title" type="text" required>
+                            <label for="title">Title</label>
+                        </div>
+
+                        <div class="input-field">
+                            <textarea id="description" name="description" class="materialize-textarea" required></textarea>
+                            <label for="description">Description</label>
+                        </div>
+
+                        <div class="input-field">
+                            <input id="number_of_positions" name="number_of_positions" type="number" min="1" required>
+                            <label for="number_of_positions">Number of Positions</label>
+                        </div>
+
+                        <div class="input-field">
+                            <select name="status" required>
+                                <option value="" disabled selected>Choose Status</option>
+                                <option value="open">Open</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                            <label>Status</label>
+                        </div>
+
+                        <button type="submit" class="btn purple">Create Position</button>
+                    </form>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+    </script>
+</body>
+</html>

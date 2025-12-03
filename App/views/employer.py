@@ -107,6 +107,49 @@ def view_shortlisted_applications(position_id):
         current_user=current_user,
     )
 
+@employer_views.route('/employer/create', methods=['GET', 'POST'])
+@jwt_required()
+def create_position():
+    if current_user.role != 'employer':
+        flash("Unauthorized access", "error")
+        return redirect(url_for("auth_views.login_page"))
+
+    employer = get_employer(current_user.id)
+
+    if request.method == 'POST':
+        title = request.form.get("title")
+        description = request.form.get("description")
+        number_of_positions = request.form.get("number_of_positions")
+        status = request.form.get("status")
+
+        try:
+            number_of_positions = int(number_of_positions) if number_of_positions else None
+        except ValueError:
+            flash("Invalid number of positions.", "error")
+            return redirect(url_for("employer_views.create_position"))
+
+        new_position = Position(
+            title=title,
+            description=description,
+            number_of_positions=number_of_positions,
+            status=PositionStatus[status.lower()] if status else PositionStatus.open,
+            employer_id=current_user.id
+        )
+
+        from App.database import db
+        try:
+            db.session.add(new_position)
+            db.session.commit()
+            flash("Position created successfully!", "success")
+            return redirect(url_for("employer_views.employer_dashboard"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Failed to create position: {str(e)}", "error")
+            return redirect(url_for("employer_views.create_position"))
+
+    return render_template("create_position.html", current_user=current_user)
+
+
 
 @employer_views.route('/employer/profile', methods=['GET', 'POST'])
 @jwt_required()
