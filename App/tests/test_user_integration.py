@@ -142,7 +142,8 @@ class UserControllerIntegrationTests(unittest.TestCase):
                 "id":user2.id, 
                 "username":"rick", 
                 "role":"staff", 
-                "email":None
+                "email":None,
+                "profile_pic":None
             },
             {
                 "id":user3.id, 
@@ -151,7 +152,8 @@ class UserControllerIntegrationTests(unittest.TestCase):
                 "email":None, 
                 "phone":None, 
                 "company_name":None, 
-                "positions":[]
+                "positions":[],
+                "profile_pic":None
             }
         ]
         
