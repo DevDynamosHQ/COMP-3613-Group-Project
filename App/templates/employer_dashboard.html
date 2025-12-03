@@ -5,7 +5,6 @@
 {% block content %}
 <div style="display: flex; height: 100vh; gap: 10px; padding: 10px;">
 
-
     <div style="flex: 5; display: flex; flex-direction: column;">
         <h5 style="margin-bottom: 10px;">Positions</h5>
 
@@ -21,18 +20,16 @@
                             <p><strong>Description:</strong> {{ pos.description }}</p>
                             <p><strong>Capacity:</strong> {{ pos.number_of_positions }}</p>
                             <p><strong>Status:</strong> {{ pos.status.value }}</p>
-                        </div>
-                        {# Interaction buttons removed #}
+                          </div>
                     </div>
                 {% endfor %}
             {% else %}
                 <p>You have not created any internship positions.</p>
             {% endif %}
         </div>
-    </div>
-
-
-    <div style="flex: 5; display: flex; flex-direction: column;">
+     </div>
+     
+     <div style="flex: 5; display: flex; flex-direction: column;">
         <h5 style="margin-bottom: 10px;">Shortlisted Applications</h5>
 
         <div style="border: 2px solid purple; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
@@ -42,9 +39,8 @@
                         <div class="card hoverable" style="padding: 5px;">
                             <div class="card-content">
                                 <span class="card-title">{{ app.student_name }}</span>
-                                <p>Status: {{ app.state_name }}</p>
-                            </div>
-                            {# Interaction buttons removed #}
+                                <p><strong>Status:</strong> {{ app.state_name }}</p>
+                             </div>
                         </div>
                     {% endfor %}
                 {% else %}
@@ -55,7 +51,7 @@
             {% endif %}
         </div>
     </div>
-    
+
 </div>
 
 {% endblock %}
