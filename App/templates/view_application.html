@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{{ position.title }}</title>
+    <title>Application {{ application.id }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -19,24 +19,17 @@
                 </div>
 
                 <div class="card-content">
-                    <h5>{{ position.title }}</h5>
-                    <p><strong>Position Id:</strong> {{ position.id }}</p>
-                    <p><strong>Company:</strong> {{ position.employer.company_name }}</p>
-                    <p><strong>Description:</strong> {{ position.description }}</p>
-                    <p><strong>Capacity:</strong> {{ position.number_of_positions }}</p>
-                    <p><strong>Status:</strong> {{ position.status.value }}</p>
-                    <p><strong>Posted By:</strong> {{ position.employer.username }}</p>
-
-                    {% if current_user.role == 'student' %}
-                    <form action="{{ url_for('student_views.apply_internship', position_id=position.id) }}" method="POST">
-                        <button type="submit" class="btn-small purple">Apply</button>
-                    </form>
-                    {% endif %}
+                    <h5>{{ application.position.title }}</h5>
+                    <p><strong>Application ID:</strong> {{ application.id }}</p>
+                    <p><strong>Position:</strong> {{ application.position.title }}</p>
+                    <p><strong>Shortlisting Staff:</strong> {% if application.staff %}{{ application.staff.username }}{% else %}N/A{% endif %}</p>
+                    <p><strong>Status:</strong> {{ application.state_name }}</p>
+                    <p><strong>Date Created:</strong> {{ application.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    <p><strong>Last Updated:</strong> {{ application.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
                 </div>
             </div>
         </div>
     </div>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>

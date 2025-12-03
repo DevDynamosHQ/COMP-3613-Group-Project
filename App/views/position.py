@@ -11,28 +11,6 @@ from App.controllers.position import (
 
 position_views = Blueprint('position_views', __name__)
 
-@position_views.route('/student/position/<int:position_id>', methods=['GET'])
-@jwt_required()
-def view_position(position_id):
-   
-    position = get_position(position_id)
-
-    if not position:
-        flash("Position not found", "error")
-        return redirect(url_for("student_views.student_dashboard"))
-
-    return render_template(
-        "position_detail.html", 
-        position=position,
-        current_user=current_user)
-
-
-
-
-
-
-
-
 
 #get all positions
 @position_views.route('/api/positions/all', methods = ['GET'])
