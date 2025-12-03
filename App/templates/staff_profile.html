@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Staff Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-container" style="padding: 20px;">
+
+        <div class="card hoverable">
+            <div class="top-bar" style="padding: 10px;">
+                <a href="{{ url_for('staff_views.staff_dashboard') }}">
+                    <i class="material-icons left">arrow_back</i>Back to Dashboard
+                </a>
+            </div>
+
+            <div class="card-content center">
+                {% if staff.profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ staff.profile_pic) }}" 
+                         alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default_profile.png') }}" 
+                         alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+
+                <h5 style="margin-top: 10px;">{{staff.full_name or staff.username}}</h5>
+
+                <p><strong>ID:</strong> {{staff.id or 'N/A'}}</p>
+                <p><strong>Role: </strong> Staff</p>
+                <p><strong>Email:</strong> {{staff.email or 'N/A'}}</p>
+
+            </div>
+
+            <div class="card-action center">
+                <a class="btn purple modal-trigger" href="#edit-profile-modal">
+                    <i class="material-icons left">edit</i>Edit Profile
+                </a>
+            </div>
+        </div>
+
+      
+        <div id="edit-profile-modal" class="modal">
+            <div class="modal-content">
+                <h5>Edit Profile</h5>
+                <form action="{{url_for('staff_views.staff_profile')}}" method="POST" enctype="multipart/form-data">
+                    <div class="file-field input-field">
+                        <div class="btn purple">
+                            <span>Profile Picture</span>
+                            <input type="file" name="profile_pic">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload profile picture">
+                        </div>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="email" name="email" id="email" value="{{staff.email}}" required>
+                        <label for="email" class="active">Email</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="username" name="username" id="username" value="{{staff.username}}" required>
+                        <label for="username" class="active">Username</label>
+                    </div>
+
+                    <button type="submit" class="btn green">
+                        <i class="material-icons left">Save</i>Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var selects = document.querySelectorAll('select');
+            M.FormSelect.init(selects);
+
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+        });
+    </script>
+</body>
+</html>
