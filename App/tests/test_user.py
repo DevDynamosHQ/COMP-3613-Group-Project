@@ -135,7 +135,8 @@ class UserControllerIntegrationTests(unittest.TestCase):
                 "gender":None,
                 "gpa":None,
                 "resume":None,
-                "age":None
+                "age":None,
+                "profile_pic":None
             }, 
             {
                 "id":user2.id, 
