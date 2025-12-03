@@ -36,7 +36,7 @@ def employer_dashboard():
             student_name = student.username if student else "Unknown"
             shortlisted.append({
                 "student_name": student_name,
-                "status": app.status,
+                "status": app.state_name,
             })
 
     return render_template(
