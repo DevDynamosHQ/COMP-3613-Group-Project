@@ -73,10 +73,22 @@ def signup_action():
     if not created:
         flash("Signup failed — username already taken", "error")
         return redirect(request.referrer)
-
     
     token = login(username, password)
+    
     flash("Signup Successful", "success")
+
+    user = get_user_by_username(username)
+    if user.role == 'student':
+        response = redirect(url_for('student_views.student_profile'))
+    elif user.role == 'staff':
+        response = redirect(url_for('staff_views.staff_dashboard'))
+    elif user.role == 'employer':
+        response = redirect(url_for('employer_views.employer_dashboard'))
+    else:
+        response = redirect(url_for('index_views.index_page'))
+
+
     set_access_cookies(response, token)
     return response
 
