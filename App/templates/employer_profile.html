@@ -27,11 +27,11 @@
                          alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
                 {% endif %}
 
-                <h5 style="margin-top: 10px;">{{ employer.company or employer.username }}</h5>
+                <h5 style="margin-top: 10px;">{{ employer.company_name or employer.username }}</h5>
 
                 <p><strong>Email:</strong> {{ employer.email or 'N/A' }}</p>
                 <p><strong>Phone:</strong> {{ employer.phone or 'N/A' }}</p>
-                <p><strong>Company:</strong> {{ employer.company or 'N/A' }}</p>
+                <p><strong>Company:</strong> {{ employer.company_name or 'N/A' }}</p>
             </div>
 
             <div class="card-action center">
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-
+        <!-- EDIT MODAL -->
         <div id="edit-profile-modal" class="modal">
             <div class="modal-content">
                 <h5>Edit Profile</h5>
@@ -68,8 +68,8 @@
                     </div>
 
                     <div class="input-field">
-                        <input type="text" name="company" id="company" value="{{ employer.company }}" required>
-                        <label for="company" class="active">Company Name</label>
+                        <input type="text" name="company_name" id="company_name" value="{{ employer.company_name }}" required>
+                        <label for="company_name" class="active">Company Name</label>
                     </div>
 
                     <button type="submit" class="btn green">
