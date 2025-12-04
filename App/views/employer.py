@@ -227,7 +227,7 @@ def employer_profile():
     if request.method == "POST":
         email = request.form.get("email")
         phone = request.form.get("phone")
-        company_name= request.form.get("company")
+        company_name= request.form.get("company_name")
 
         profile_file = request.files.get("profile_pic")
         profile_filename = None
