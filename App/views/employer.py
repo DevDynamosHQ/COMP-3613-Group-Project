@@ -62,7 +62,7 @@ def edit_position(position_id):
         return redirect(url_for('employer_views.employer_dashboard'))
 
     if request.method == 'POST':
-        # Update the position
+       
         title = request.form.get("title")
         description = request.form.get("description")
         number_of_positions = request.form.get("number_of_positions")
@@ -87,7 +87,6 @@ def edit_position(position_id):
             flash("Failed to update position.", "error")
         return redirect(url_for('employer_views.employer_dashboard'))
 
-    # GET request: render edit form
     return render_template('edit_position.html', position=position)
 
 
