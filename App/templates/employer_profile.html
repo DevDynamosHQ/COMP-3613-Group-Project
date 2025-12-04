@@ -27,7 +27,7 @@
                          alt="Profile Picture" class="circle responsive-img" style="width: 150px; height: 150px; object-fit: cover;">
                 {% endif %}
 
-                <h5 style="margin-top: 10px;">{{ employer.company_name or employer.username }}</h5>
+                <h5 style="margin-top: 10px;">{{employer.username }}</h5>
 
                 <p><strong>Email:</strong> {{ employer.email or 'N/A' }}</p>
                 <p><strong>Phone:</strong> {{ employer.phone or 'N/A' }}</p>
@@ -41,7 +41,6 @@
             </div>
         </div>
 
-        <!-- EDIT MODAL -->
         <div id="edit-profile-modal" class="modal">
             <div class="modal-content">
                 <h5>Edit Profile</h5>
