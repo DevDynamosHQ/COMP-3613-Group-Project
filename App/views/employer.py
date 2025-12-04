@@ -227,9 +227,8 @@ def employer_profile():
     if request.method == "POST":
         email = request.form.get("email")
         phone = request.form.get("phone")
-        company = request.form.get("company")
+        company_name= request.form.get("company")
 
-        # --- Profile Picture Upload ---
         profile_file = request.files.get("profile_pic")
         profile_filename = None
         if profile_file and profile_file.filename.strip():
@@ -242,7 +241,7 @@ def employer_profile():
             employer.id,
             email=email,
             phone=phone,
-            company=company,
+            company_name=company_name,
             profile_pic=profile_filename if profile_filename else employer.profile_pic
         )
 
